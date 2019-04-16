@@ -1,0 +1,30 @@
+@import "../../../node_modules/antd/lib/style/themes/default.less";
+
+.colorItem{
+    width:34px;
+    height:34px;
+    overflow: hidden;
+    border:1px solid #d3d3d3;
+    border-radius:100%;
+    position: relative;
+    cursor: pointer;
+    & > div{
+        display:inline-block;
+        height:34px;
+    }
+    &.selected{
+        border-color:@primary-color;
+        i{
+            position: absolute;
+            top:10px;
+            left:10px;
+            z-index:4;
+            color:#000;
+        }
+        &.white{
+            i{
+                color:#fff;
+            }
+        }
+    }
+}

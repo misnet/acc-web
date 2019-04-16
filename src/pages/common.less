@@ -1,0 +1,70 @@
+@import "../../node_modules/antd/lib/style/themes/default.less";
+@import "../utils/utils.less";
+/*表上头工具栏*/
+.navToolbarAffix {
+  .ant-affix{
+    z-index:1;
+  }
+}
+.navToolbar{
+  z-index: 1;
+  padding: 16px 0 0 0;
+  background:#fff;
+  text-align:right;
+  button {
+    margin-right: 8px;
+  }
+}
+/*html editor style*/
+.editorContainer{
+  border:1px solid @border-color-base;
+}
+.tableListForm {
+  :global {
+    .ant-form-item {
+      margin-bottom: 24px;
+      margin-right: 0;
+      display: flex;
+      > .ant-form-item-label {
+        width: auto;
+        line-height: 32px;
+        padding-right: 8px;
+      }
+    }
+    .ant-form-item-control-wrapper {
+      flex: 1;
+    }
+  }
+  .submitButtons {
+    white-space: nowrap;
+    margin-bottom: 24px;
+  }
+}
+
+@media screen and (max-width: @screen-lg) {
+  .tableListForm :global(.ant-form-item) {
+    margin-right: 24px;
+  }
+}
+
+@media screen and (max-width: @screen-md) {
+  .tableListForm :global(.ant-form-item) {
+    margin-right: 8px;
+  }
+}
+
+
+.editable-cell {
+  position: relative;
+}
+
+.editable-cell-value-wrap {
+  padding: 5px 12px;
+  cursor: pointer;
+}
+
+.editable-row:hover .editable-cell-value-wrap {
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  padding: 4px 11px;
+}
