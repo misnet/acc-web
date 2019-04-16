@@ -8,7 +8,6 @@ import settingDrawer from './zh-TW/settingDrawer';
 import settings from './zh-TW/settings';
 import pwa from './zh-TW/pwa';
 
-import product from './zh-TW/product';
 export default {
   'navBar.lang': '語言',
   'layout.user.link.help': '幫助',
@@ -26,6 +25,5 @@ export default {
   ...settingDrawer,
   ...settings,
   ...pwa,
-    ...form,
-    ...product
+    ...form
 };
