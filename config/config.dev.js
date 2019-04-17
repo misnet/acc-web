@@ -39,7 +39,7 @@ export default {
     routes: pageRoutes,
     define: {
         "APP_TYPE": process.env.APP_TYPE || '',
-        "process.env.API_GATEWAY":'http://api.acc.kuga.wang/v3/gateway',
+        "process.env.API_GATEWAY":'http://acc.api.kuga.wang/v3/gateway',
         "process.env.API_KEY": 1000,
         "process.env.API_SECRET":'IsuZLMPJDVnwYp8XYp/Pf4HH6e5PY28c8oQy8akF5vWxMjvvSNORdPvDu6HK9eOAGcVmDk1jLRYIkAcGu7tgUQ=='
     },

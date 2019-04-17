@@ -9,7 +9,7 @@ export default {
    */
   getOption() {
     const defaultOption = {
-      gateway: 'http://api.acc.kuga.wang/v3/gateway',
+      gateway: 'http://acc.api.kuga.wang/v3/gateway',
       appKey: 1000,
       appSecret: 'IsuZLMPJDVnwYp8XYp/Pf4HH6e5PY28c8oQy8akF5vWxMjvvSNORdPvDu6HK9eOAGcVmDk1jLRYIkAcGu7tgUQ=='
     };

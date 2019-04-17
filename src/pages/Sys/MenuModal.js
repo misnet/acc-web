@@ -70,12 +70,12 @@ const menuModal = ({
                 label="父级菜单"
             >
                 {getFieldDecorator('parentId', {
-                initialValue: item.parentId,
+                    initialValue: item.parentId,
                 })(
                 <Select
                     style={{width: '100%'}}
                 >
-                    <Select.Option value="0">--选择上级菜单--</Select.Option>
+                    <Select.Option value={0}>--选择上级菜单--</Select.Option>
                     {menuList.map((opt, e) => {
                         let optionComponent = [];
                         optionComponent.push(<Select.Option value={opt.id}>{opt.name}</Select.Option>)
@@ -94,7 +94,7 @@ const menuModal = ({
                 initialValue:item.display>0,
                 valuePropName:'checked'
             })(
-              <Checkbox defaultChecked={item.display > 0} name="display">显示</Checkbox>
+              <Checkbox  name="display">显示</Checkbox>
             )}
             </FormItem>
 

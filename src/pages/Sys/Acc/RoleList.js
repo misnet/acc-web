@@ -57,6 +57,11 @@ class RoleList extends PureComponent {
                 appId:currentApp.id
             }
         });
+
+        this.setState({
+            appName:currentApp.name,
+            appId:currentApp.id
+        });
     }
 
     /**

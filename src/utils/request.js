@@ -85,10 +85,13 @@ export default function request(url, options) {
       var t = value == null ? '' : value;
       if (isBoolean(t)) {
         t = t ? 1 : '';
-      }else if(typeof t === 'object'){
+      }else if(Array.isArray(t) ||(typeof t =='object' && t!==null)){
         t = JSON.stringify(t);
+      }else if(t === null){
+        t = '';
       }
       sign += key + t;
+      console.log(sign);
       newParams[key] = value;
     }
   });
