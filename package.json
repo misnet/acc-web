@@ -1,9 +1,10 @@
 {
   "private": true,
   "scripts": {
-    "start": "cross-env APP_TYPE=site umi dev",
-    "start-prod": "cross-env UMI_ENV=prod APP_TYPE=site umi build",
-    "start-dev": "cross-env UMI_ENV=dev APP_TYPE=site umi dev",
+    "start": "cross-env UMI_ENV=dev APP_TYPE=site umi dev",
+    "start-prod": "cross-env UMI_ENV=prod APP_TYPE=site umi dev",
+    "build-prod": "cross-env UMI_ENV=prod APP_TYPE=site umi build",
+    "build-dev": "cross-env UMI_ENV=dev APP_TYPE=site umi build",
     "build": "umi build",
     "test": "umi test",
     "site": "npm run presite && cross-env APP_TYPE=site npm run build && firebase deploy && npm run docker:push",

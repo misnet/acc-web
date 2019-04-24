@@ -27,6 +27,6 @@ export default {
     console.log('newOption',process.env.API_GATEWAY);
     return newOption;
   },
-  SYS_NAME:'Depoga ACC',
+  SYS_NAME:'Kuga ACC',
   DATE_FORMAT:'YYYY年MM月DD日 HH:mm:ss'
 };

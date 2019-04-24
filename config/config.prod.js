@@ -8,7 +8,7 @@ export default {
         ['umi-plugin-react', {
             antd: true,
             dva: {
-                immer:true
+                //immer:true
             },
             dynamicImport: true,
             title: 'acc-web',
@@ -32,6 +32,7 @@ export default {
                 : {}),
         }],
     ],
+    hash:true,
     //路由
     routes: pageRoutes,
     define: {

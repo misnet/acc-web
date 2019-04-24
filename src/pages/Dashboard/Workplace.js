@@ -93,7 +93,7 @@ class Workplace extends PureComponent {
           />
         </div>
         <div className={styles.content}>
-          <div className={styles.contentTitle}>{currentUser.username}，祝你开心每一天！</div>
+          <div className={styles.contentTitle}>{currentUser.username}，你好！</div>
           <div>{moment().format(config.DATE_FORMAT)}</div>
         </div>
       </div>

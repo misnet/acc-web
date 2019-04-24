@@ -5,14 +5,14 @@ import { Icon, Row, Col } from 'antd';
 import classNames from 'classnames';
 import GlobalFooter from '@/components/GlobalFooter';
 import styles from './UserLayout.less';
-import logo from '@/assets/logo.png';
+import logo from '@/assets/logo.svg';
 import config from '../config';
 import {getRandNumber} from '../utils/utils';
 const links = [];
 
 const copyright = (
   <Fragment>
-    Copyright <Icon type="copyright" /> 2018 Depoga 出品
+    Copyright <Icon type="copyright" /> 2018 Donny 出品
   </Fragment>
 );
 
@@ -22,7 +22,7 @@ class UserLayout extends React.PureComponent {
     const { pathname } = location;
     let title = config.SYS_NAME;
     if (routerData[pathname] && routerData[pathname].name) {
-      title = `${routerData[pathname].name} - Depoga Demo2`;
+      title = `${routerData[pathname].name} - Kuga Demo2`;
     }
     return title;
   }
@@ -38,7 +38,7 @@ class UserLayout extends React.PureComponent {
     const { routerData, match } = this.props;
     const bgIndex = this.getBackgroundImageIndex();
     return (
-      <DocumentTitle title={'Kuga'}>
+      <DocumentTitle title={'Kuga ACC'}>
         <div className={styles.container}>
           <div className={styles.content}>
             <div className={classNames(styles.loginColumn,styles.loginForm)}>
@@ -46,7 +46,7 @@ class UserLayout extends React.PureComponent {
                 <div className={styles.header}>
                   <Link to="/">
                     <img alt="logo" className={styles.logo} src={logo} />
-                    <span className={styles.title}>Depoga ACC</span>
+                    <span className={styles.title}>Kuga ACC</span>
                   </Link>
                 </div>
               </div>

@@ -1,5 +1,26 @@
 import { menuList as queryMenus, createMenu, updateMenu, deleteMenu } from '../services/menu';
 import { indexOf } from 'lodash';
+
+import { getUserProfile } from '@/utils/auth';
+import { getMenuData } from '@/layouts/Menu';
+/**
+ * 根据菜单取得重定向地址.
+ */
+const redirectData = [];
+const getRedirect = item => {
+    if (item && item.children) {
+        if (item.children[0] && item.children[0].path) {
+            redirectData.push({
+                from: `${item.path}`,
+                to: `${item.children[0].path}`,
+            });
+            item.children.forEach(children => {
+                getRedirect(children);
+            });
+        }
+    }
+};
+
 export default {
     namespace: 'menu',
 
@@ -8,9 +29,19 @@ export default {
         modalVisible: false,
         modalType: 'create',
         editMenu: {},
+        menuData:[]
     },
 
     effects: {
+        *getMenuData({ payload }, { call,put }) {
+            const { menuList } = yield call(getUserProfile);
+            const menuData = getMenuData(menuList);
+            menuData.forEach(getRedirect);
+            yield put({
+                type:'saveMenuData',
+                payload:menuData
+            })
+        },
         //创建
         *create({ payload }, { call, put }) {
             const response = yield call(createMenu, payload);
@@ -75,6 +106,12 @@ export default {
     //redux
 
     reducers: {
+        saveMenuData(state, action) {
+            return {
+                ...state,
+                menuData: action.payload
+            };
+        },
         //改变data中allow的值，在给角色分配菜单时需要调用这个方法
         setMenuAllow(state, action) {
             const { menuIds } = action.payload;

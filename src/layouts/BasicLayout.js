@@ -8,20 +8,20 @@ import { ContainerQuery } from 'react-container-query';
 import classNames from 'classnames';
 import pathToRegexp from 'path-to-regexp';
 import Media from 'react-media';
-import { formatMessage } from 'umi-plugin-react/locale';
+import { formatMessage } from 'umi/locale';
 import Authorized from '@/utils/Authorized';
-import logo from '../assets/logo.png';
+import logo from '../assets/logo.svg';
 import Footer from './Footer';
 import Header from './Header';
 import Context from './MenuContext';
 import Exception403 from '../pages/Exception/403';
 import SiderMenu from '@/components/SiderMenu';
-import { getUserProfile } from '../utils/auth';
-import { getMenuData } from './Menu';
+
 
 import { hasPermission } from '../utils/authority';
 import config from '../config';
 // lazy load SettingDrawer
+//import PageLoading from '@/components/PageLoading';
 //const SettingDrawer = React.lazy(() => import('@/components/SettingDrawer'));
 const { Content } = Layout;
 
@@ -66,10 +66,6 @@ const getRedirect = item => {
         }
     }
 };
-const { menuList } = getUserProfile();
-//console.log('menuList', menuList);
-const menuData = getMenuData([]);
-menuData.forEach(getRedirect);
 
 class BasicLayout extends React.PureComponent {
     constructor(props) {
@@ -88,6 +84,13 @@ class BasicLayout extends React.PureComponent {
         dispatch({
             type: 'user/fetchCurrent',
         });
+        dispatch({
+            type:'menu/getMenuData'
+        })
+        // let { menuList } = getUserProfile();
+        // console.log('getUserProfile menuList', menuList);
+        //  menuData = getMenuData(menuList);
+        // menuData.forEach(getRedirect);
     }
 
     componentDidUpdate(preProps) {
@@ -114,6 +117,7 @@ class BasicLayout extends React.PureComponent {
      */
     getBreadcrumbNameMap() {
         const routerMap = {};
+        const {menuData} = this.props;
         const flattenMenuData = data => {
             data.forEach(menuItem => {
                 if (menuItem.children) {
@@ -191,6 +195,7 @@ class BasicLayout extends React.PureComponent {
             children,
             location: { pathname },
             isMobile,
+            menuData
         } = this.props;
         const isTop = PropsLayout === 'topmenu';
         const routerConfig = this.matchParamsPath(pathname);
@@ -257,6 +262,7 @@ export default connect(({ global, setting, menu }) => ({
     collapsed: global.collapsed,
     layout: setting.layout,
     ...setting,
+    menuData:menu.menuData
 }))(props => (
     <Media query="(max-width: 599px)">
         {isMobile => <BasicLayout {...props} isMobile={isMobile} />}
