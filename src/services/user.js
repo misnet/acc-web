@@ -51,7 +51,15 @@ export async function userLogin(params) {
     body: params,
   });
 }
-
+/**
+ * 刷新AccessToken
+ */
+export async function refreshAccessToken(params){
+  return request(APILIST.BACKEND.USER_REFRESH_TOKEN, {
+    method: 'POST',
+    body: params,
+  });
+}
 /**
  * 创建管理人员
  * @param params

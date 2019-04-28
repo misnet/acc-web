@@ -15,6 +15,8 @@ export default {
         APP_UPDATE:'acc.app.update',
         APP_DELETE:'acc.app.delete',
 
+        //刷新AccessToken
+        USER_REFRESH_TOKEN:'acc.user.refresh.token',
         // 用户登陆
         USER_LOGIN: 'acc.user.login',
         // 用户查询

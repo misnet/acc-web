@@ -106,6 +106,26 @@ export default function request(url, options) {
         case 99000:
            router.push('/500');
            break;
+        case 99004:
+           //accessToken无效了
+           window.g_app._store.dispatch({
+             type:'login/refreshToken',
+             payload:{
+               refreshToken:sessionStorage.getItem('console.refreshToken')
+             }
+           });
+
+           notification.error({
+            message: '警告提示',
+            description: '登陆状态失效，正重新刷新，如页面不正常，请刷新一下',
+          });
+           break;
+        case 99006:
+           //刷新token无效了
+           window.g_app._store.dispatch({
+            type:'login/logout'
+          });
+          break;
         default:
           if (resp.status > 0) {
             notification.error({
