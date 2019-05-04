@@ -6,7 +6,36 @@
 
 import request from '../utils/request';
 import APILIST from '../apiList';
-
+/**
+ * 导入权限资源
+ * @param {*} params 
+ */
+export async function importResourceXml(params){
+    return request(APILIST.BACKEND.RESOURCE_XML_IMPORT,{
+        method:'POST',
+        body:params
+    });
+}
+/**
+ * 上传XML内容，让服务端分析
+ * @param {} params 
+ */
+export async function parseResourceXml(params){
+    return request(APILIST.BACKEND.RESOURCE_XML_PARSE,{
+        method:'POST',
+        body:params
+    })
+}
+/**
+ * 将资源操作授权给角色
+ * @param {*} params 
+ */
+export async function saveOperationsToRole(params){
+    return request (APILIST.BACKEND.SAVE_OPERATIONS_TO_ROLE,{
+        method:'POST',
+        body:params
+    });
+}
 /**
  * 列出所有操作集
  * @param params

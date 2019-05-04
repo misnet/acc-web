@@ -61,6 +61,12 @@ export default {
         // 权限资源组
         RESOURCE_GROUP:'acc.role.resourcegroup',
         // 权限操作集
-        RESOURCE_OPS:'acc.role.listops'
+        RESOURCE_OPS:'acc.role.listops',
+        /**
+         * 给角色分配资源操作
+         */
+        SAVE_OPERATIONS_TO_ROLE:'acc.role.save.operations',
+        RESOURCE_XML_PARSE:'acc.role.resourcesxml.parse',
+        RESOURCE_XML_IMPORT:'acc.role.resourcesxml.import'
     },
 };

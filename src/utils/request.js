@@ -91,7 +91,6 @@ export default function request(url, options) {
         t = '';
       }
       sign += key + t;
-      console.log(sign);
       newParams[key] = value;
     }
   });

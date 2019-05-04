@@ -5,12 +5,13 @@
  */
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Card, Form, Checkbox, Table, Button,Affix,Divider } from 'antd';
+import { Card, Form, Checkbox, Table, Button,Affix,Divider,Radio } from 'antd';
 import { routerRedux } from 'dva/router';
-import { indexOf, without } from 'lodash';
+import { indexOf, without,findIndex,remove } from 'lodash';
 import { formatMessage } from 'umi-plugin-react/locale';
 import PageHeaderWrapper from '../../../components/PageHeaderWrapper';
 import styles from '../../common.less';
+import {getCachedApp} from '@/utils/utils';
 @connect(({ operations, loading }) => ({
     operations,
     loading: loading.effects['operations/list'],
@@ -19,52 +20,87 @@ import styles from '../../common.less';
 @Form.create()
 class AssignResToRole extends PureComponent {
     state = {
-        indeterminate: false,
-        checkAll: false,
-        selectedRowKeys: [], // Check here to configure the default column
+        checkAll: -1,
+        selectedRowKeys: [], 
     };
-    onSelect = e => {
-        const { operations: { data } } = this.props;
-        let selectedKeys = Object.assign([], this.state.selectedRowKeys);
-        if (e.target.checked) {
-            indexOf(selectedKeys, e.target.value) == -1 ? selectedKeys.push(e.target.value) : null;
-        } else {
-            indexOf(selectedKeys, e.target.value) != -1
-                ? (selectedKeys = without(selectedKeys, e.target.value))
-                : null;
+    onSelect = (e,code) => {
+        console.log('e',e);
+        const { operations: { data },dispatch } = this.props;
+        let newOps = [...data.op];
+        const index = findIndex(newOps,item=>item.code==code);
+        if(index>-1){
+            newOps[index]['allow'] = e.target.value;
+            console.log('newOps[index]',index,code,newOps[index]);
+            console.log('newOps',newOps);
+            dispatch({
+                type:'operations/save',
+                payload:{
+                    ...data,
+                    op:newOps
+                }
+            })
         }
-        this.setState({
-            selectedRowKeys: selectedKeys,
-            checkAll: selectedKeys.length == data.op.length,
-            indeterminate: selectedKeys.length && selectedKeys.length < data.op.length,
-        });
     };
-    onSelectAll = e => {
-        const { operations: { data } } = this.props;
-        let selectedRowKeys = [];
-        if (e.target.checked) {
-            data.op.map(record => selectedRowKeys.push(record.code));
-        } else {
-            selectedRowKeys = [];
+    onSelectAll = (e) => {
+        const { operations: { data },dispatch } = this.props;
+        let newData = [];
+        if (e.target.value===1) {
+            newData = data.op.map(record => ({
+                ...record,
+                allow:1
+            }));
+        } else if(e.target.value===0) {
+            newData = data.op.map(record => ({
+                ...record,
+                allow:0
+            }));
+        }else{
+            newData = data.op.map(record => ({
+                ...record,
+                allow:-1
+            }));
         }
-        this.setState({
-            checkAll: e.target.checked,
-            indeterminate: false,
-            selectedRowKeys,
-        });
+        dispatch({
+            type:'operations/save',
+            payload:{
+                ...data,
+                op:newData
+            }
+        })
+        // console.log('selectedRowKeys',selectedRowKeys);
+        // this.setState({
+        //     checkAll: e.target.value,
+        //     selectedRowKeys,
+        // });
     };
     onSave = () => {
-        const { dispatch, match: { params } } = this.props;
+        const { dispatch, match: { params },operations:{data} } = this.props;
         dispatch({
             type: 'operations/assign',
-            payload: { rid: params.rid, opcodes: this.state.selectedRowKeys.join(',') },
+            payload: { 
+                rid: params.rid, 
+                opcodes: data.op,
+                res:params.rcode
+            },
         });
     };
     componentDidMount() {
-        const { dispatch, match: { params } } = this.props;
+        const { dispatch, match: { params }} = this.props;
+        if(!params.rcode || !params.rid){
+            routerRedux.push('/exception/404');
+            return;
+        }
+
+
+        const currentApp = getCachedApp();
+        if (!currentApp) {
+            routerRedux.push("/exception/404");
+            return;
+        }
+
         dispatch({
             type: 'operations/list',
-            payload: { rid: params.rid, res: params.rcode },
+            payload: { appId:currentApp.id,rid: params.rid, res: params.rcode },
         });
     }
 
@@ -75,8 +111,9 @@ class AssignResToRole extends PureComponent {
             saveLoading,
             match: { params },
             dispatch,
+            form:{getFieldDecorator}
         } = this.props;
-        const { selectedRowKeys, indeterminate, checkAll } = this.state;
+        const { selectedRowKeys,checkAll } = this.state;
         // 表列定义
         const columns = [
             {
@@ -93,29 +130,43 @@ class AssignResToRole extends PureComponent {
                 title: '当前权限结果',
                 key: 'allow',
                 dataIndex: 'allow',
-                render: (text, record) => <span>{record.allow > 0 ? '允许' : '禁止'}</span>,
+                render: (text, record) => <span>{record.allow == 1 ? '允许' : (record.allow == 0)?'禁止':'不设置'}</span>,
             },
             {
                 title: (
-                    <Checkbox
-                        indeterminate={indeterminate}
-                        checked={checkAll}
-                        onChange={this.onSelectAll}
-                    >
-                        授权
-                    </Checkbox>
+                    //console.log('record.code',selectedRowKeys,record.code,indexOf(selectedRowKeys, record.code));
+                    getFieldDecorator('all',{
+                        initialValue:checkAll
+                    })(
+                        <Radio.Group
+                            buttonStyle="solid"
+                            size="small"
+                            onChange={this.onSelectAll} 
+                        >
+                            <Radio.Button value={1}>允许</Radio.Button>
+                            <Radio.Button value={0}>禁止</Radio.Button>
+                            <Radio.Button value={-1}>不设置</Radio.Button>
+                        </Radio.Group>
+                    )
                 ),
                 key: 'assign',
-                dataIndex: 'allow',
-                render: (text, record) => (
-                    <Checkbox
-                        onChange={this.onSelect}
-                        checked={indexOf(selectedRowKeys, record.code) != -1}
-                        value={record.code}
-                    >
-                        允许
-                    </Checkbox>
-                ),
+                dataIndex: 'assign',
+                render: (text, record) => {
+                    //console.log('record.code',selectedRowKeys,record.code,indexOf(selectedRowKeys, record.code));
+                    return getFieldDecorator('assign_'+record.code,{
+                        initialValue:record.allow
+                    })(
+                        <Radio.Group
+                            size="small"
+                            buttonStyle="solid"
+                            onChange={(e)=>this.onSelect(e,record.code)} 
+                        >
+                            <Radio.Button value={1}>允许</Radio.Button>
+                            <Radio.Button value={0}>禁止</Radio.Button>
+                            <Radio.Button value={-1}>不设置</Radio.Button>
+                        </Radio.Group>
+                    )
+                }
             },
         ];
         const returnBack = () => {

@@ -2,7 +2,7 @@
  * 权限操作的分配
  * @author Donny
  */
-import { listOperationList } from '../../../../services/role';
+import { listOperationList,saveOperationsToRole } from '@/services/role';
 
 export default {
     namespace: 'operations',
@@ -14,6 +14,11 @@ export default {
     effects: {
         *assign({ payload }, { call, put }) {
             console.log('PAYLOAD', payload);
+            const response = yield call(saveOperationsToRole,payload);
+            console.log('response',response);
+            if(response.status === 0){
+                
+            }
         },
         *list({ payload }, { call, put }) {
             const response = yield call(listOperationList, payload);

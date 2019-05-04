@@ -294,7 +294,7 @@ export function getRandNumber(minNum = 1, maxNum = 10) {
  * @param {*} param 
  */
 export function getCachedApp(param){
-    if(param.appName!=undefined && param.appId!=undefined){
+    if(param!=undefined && param.appName!=undefined && param.appId!=undefined){
         const app = {
             id:param.appId,
             name:param.appName
