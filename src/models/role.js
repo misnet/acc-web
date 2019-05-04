@@ -11,7 +11,9 @@ export default {
         data: [],
         modalVisible: false,
         modalType: 'create',
-        editData: {},
+        editData: {
+            assignPolicy:0
+        },
     },
 
     effects: {

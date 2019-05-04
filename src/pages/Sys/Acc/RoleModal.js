@@ -6,7 +6,7 @@
 import { Form, Input, Modal, Checkbox, InputNumber, Radio } from 'antd';
 import React from 'react';
 import PropTypes from 'prop-types';
-
+import DICT from '@/dict';
 const FormItem = Form.Item;
 const roleModal = ({
     item = {},
@@ -37,15 +37,15 @@ const roleModal = ({
     ];
     const assignPolicyList = [
         {
-            id: 0,
+            id: DICT.ROLE_ASSIGN_POLICY_NOAUTO,
             name: '不自动分配',
         },
         {
-            id: 1,
+            id: DICT.ROLE_ASSIGN_POLICY_TO_LOGINED,
             name: '自动分配给已登陆用户',
         },
         {
-            id: 2,
+            id: DICT.ROLE_ASSIGN_POLICY_TO_UNLOGINED,
             name: '自动分配给未登陆用户',
         },
     ];

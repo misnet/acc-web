@@ -27,6 +27,7 @@ const userModal = ({
     appList.map(app => {
         appChkList.push({ label: app.name, value: parseInt(app.id,10)});
     });
+    console.log('appChkList',appChkList);
     if(!editUser.uid && !editUser.appIds){
       editUser.appIds = [];
       editUser.appIds.push(parseInt(modalOpts.currentAppId));
@@ -112,10 +113,10 @@ const userModal = ({
                 <Col span={7}>
                     <FormItem>
                         {getFieldDecorator("mobileVerified", {
-                            initialValue: editUser.mobileVerified,
+                            initialValue: editUser.mobileVerified>0?true:false,
                             valuePropName: "checked"
                         })(
-                            <Checkbox name="mobileVerified" value={1}>
+                            <Checkbox name="mobileVerified" >
                                 手机验证
                             </Checkbox>
                         )}
@@ -124,10 +125,10 @@ const userModal = ({
                 <Col span={8}>
                     <FormItem>
                         {getFieldDecorator("emailVerified", {
-                            initialValue: editUser.emailVerified,
+                            initialValue: editUser.emailVerified>0?true:false,
                             valuePropName: "checked"
                         })(
-                            <Checkbox name="emailVerified" value={1}>
+                            <Checkbox name="emailVerified">
                                 Email验证
                             </Checkbox>
                         )}
