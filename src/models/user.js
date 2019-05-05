@@ -26,7 +26,7 @@ export default {
       }
     },
     //创建
-    * create ({payload}, {call, put}) {
+    * create ({payload}, {call, put,select}) {
       const response = yield call(createUser, payload);
       if (response.status == 0) {
         yield put({
@@ -35,8 +35,7 @@ export default {
 
         //提交成功
         yield put({
-          type: 'userList',
-          payload: {},
+          type: 'userList'
         });
       }
     },
@@ -50,15 +49,22 @@ export default {
           type: 'hideModal',
         });
         //提交成功
+        
         yield put({
-          type: 'userList',
-          payload: {},
+          type: 'userList'
         });
       }
     },
     //列表
-    * userList ({payload}, {call, put}) {
-      const response = yield call(queryUsers, payload);
+    * userList ({payload}, {call, put,select}) {
+      const currentApp = yield select(({app}) => app.currentApp);
+      let newPayload = {
+        ...payload
+      };
+      if(currentApp && currentApp.id){
+        newPayload['appId'] = currentApp.id;
+      }
+      const response = yield call(queryUsers, newPayload);
       let data = {};
       if (typeof response['data']['total'] !== 'undefined') {
         data = response['data'];

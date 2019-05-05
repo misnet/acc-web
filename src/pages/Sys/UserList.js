@@ -20,6 +20,9 @@ import PageHeaderWrapper from '../../components/PageHeaderWrapper';
 import UserModal from './UserModal';
 import styles from '../common.less'
 import { formatMessage } from 'umi-plugin-react/locale';
+import {getCachedApp} from '@/utils/utils';
+
+
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',')
 
 @connect(({app,user, loading}) => ({
@@ -43,6 +46,16 @@ class UserListPage extends PureComponent {
     if(!query.appId){
       router.push('/exception/404');
       return;
+    }
+    const currentApp = getCachedApp(query);
+    if (!currentApp) {
+        routerRedux.push("/exception/404");
+        return;
+    }else{
+        dispatch({
+            type:'app/setCurrentApp',
+            payload:currentApp
+        });
     }
     dispatch({
       type: 'user/userList',

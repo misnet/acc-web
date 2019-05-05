@@ -12,7 +12,8 @@ import { formatMessage } from 'umi-plugin-react/locale';
 import PageHeaderWrapper from '../../../components/PageHeaderWrapper';
 import styles from '../../common.less';
 import {getCachedApp} from '@/utils/utils';
-@connect(({ operations, loading }) => ({
+@connect(({ app,operations, loading }) => ({
+    app,
     operations,
     loading: loading.effects['operations/list'],
     saveLoading: loading.effects['operations/assign'],
@@ -20,7 +21,7 @@ import {getCachedApp} from '@/utils/utils';
 @Form.create()
 class AssignResToRole extends PureComponent {
     state = {
-        checkAll: -1,
+        checkAll: 2,
         selectedRowKeys: [], 
     };
     onSelect = (e,code) => {
@@ -59,6 +60,7 @@ class AssignResToRole extends PureComponent {
                 ...record,
                 allow:-1
             }));
+            console.log('newData',newData);
         }
         dispatch({
             type:'operations/save',
@@ -74,10 +76,16 @@ class AssignResToRole extends PureComponent {
         // });
     };
     onSave = () => {
-        const { dispatch, match: { params },operations:{data} } = this.props;
+        const { 
+            dispatch, 
+            match: { params },
+            operations:{data},
+            app:{currentApp}
+         } = this.props;
         dispatch({
             type: 'operations/assign',
             payload: { 
+                appId:currentApp.id,
                 rid: params.rid, 
                 opcodes: data.op,
                 res:params.rcode
@@ -97,6 +105,10 @@ class AssignResToRole extends PureComponent {
             routerRedux.push("/exception/404");
             return;
         }
+        dispatch({
+            type:'app/setCurrentApp',
+            payload:currentApp
+        });
 
         dispatch({
             type: 'operations/list',
@@ -177,6 +189,10 @@ class AssignResToRole extends PureComponent {
                 <Card bordered={false}>
                     <Affix offsetTop={64} className={styles.navToolbarAffix}>
                         <div className={styles.navToolbar}>
+                        
+                        <Button icon="arrow-left" onClick={returnBack}>
+                            返回
+                        </Button>
                         <Button
                             icon="check"
                             type="primary"
@@ -184,9 +200,6 @@ class AssignResToRole extends PureComponent {
                             onClick={this.onSave}
                         >
                             保存
-                        </Button>
-                        <Button icon="arrow-left" onClick={returnBack}>
-                            返回
                         </Button>
                         <Divider />
                         </div>
