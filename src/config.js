@@ -27,6 +27,6 @@ export default {
     console.log('newOption',process.env.API_GATEWAY);
     return newOption;
   },
-  SYS_NAME:'Kuga ACC',
+  SYS_NAME:process.env.TITLE?process.env.TITLE:'Kuga ACC',
   DATE_FORMAT:'YYYY年MM月DD日 HH:mm:ss'
 };

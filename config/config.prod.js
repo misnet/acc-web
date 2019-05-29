@@ -39,6 +39,7 @@ export default {
         "APP_TYPE": process.env.APP_TYPE || '',
         "process.env.API_GATEWAY":'https://acc.api.depoga.com/v3/gateway',
         "process.env.API_KEY": 1000,
+        "process.env.TITLE":'KUGA ACC',
         "process.env.API_SECRET":'IsuZLMPJDVnwYp8XYp/Pf4HH6e5PY28c8oQy8akF5vWxMjvvSNORdPvDu6HK9eOAGcVmDk1jLRYIkAcGu7tgUQ=='
     },
     lessLoaderOptions: {

@@ -38,7 +38,7 @@ class UserLayout extends React.PureComponent {
     const { routerData, match } = this.props;
     const bgIndex = this.getBackgroundImageIndex();
     return (
-      <DocumentTitle title={'Kuga ACC'}>
+      <DocumentTitle title={config.SYS_NAME}>
         <div className={styles.container}>
           <div className={styles.content}>
             <div className={classNames(styles.loginColumn,styles.loginForm)}>
@@ -46,7 +46,7 @@ class UserLayout extends React.PureComponent {
                 <div className={styles.header}>
                   <Link to="/">
                     <img alt="logo" className={styles.logo} src={logo} />
-                    <span className={styles.title}>Kuga ACC</span>
+                    <span className={styles.title}>{config.SYS_NAME}</span>
                   </Link>
                 </div>
               </div>
