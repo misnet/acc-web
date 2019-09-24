@@ -1,4 +1,4 @@
-import { queryUsers, queryCurrent, createUser, updateUser, deleteUser, changePasswd } from '../services/user';
+import { queryUsers, queryCurrent, createUser, updateUser, deleteUser, changePasswd,queryAllUsers } from '../services/user';
 
 export default {
   namespace: 'user',
@@ -77,6 +77,23 @@ export default {
         payload: data,
       });
     },
+
+
+    * allUserList ({payload}, {call, put,select}) {
+      const response = yield call(queryAllUsers, payload);
+      let data = {};
+      if (typeof response['data']['total'] !== 'undefined') {
+        data = response['data'];
+      } else {
+        data = {total: 0, list: [], page: 1, limit: 10};
+      }
+      yield put({
+        type: 'save',
+
+        payload: data,
+      });
+    },
+
     //取当前登录的用户
     * fetchCurrent (_, {call, put}) {
       const response = yield call(queryCurrent);

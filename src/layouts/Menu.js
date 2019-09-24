@@ -2,18 +2,15 @@ import { isUrl } from '../utils/utils';
 
 const menuData = [
   {
-    name: 'Dashboard',
+    name: '全部应用',
     icon: 'dashboard',
-    path: 'dashboard',
-    children: [
-      {
-        name: '工作台',
-        path: 'workplace',
-        icon: 'dashboard',
-        // hideInBreadcrumb: true,
-        // hideInMenu: true,
-      },
-    ],
+    path: 'dashboard/workplace'
+  },
+  {
+    name: '全部用户',
+    icon: 'user',
+    path: 'sys/all-userlist',
+    
   },
 ];
 

@@ -316,3 +316,43 @@ export function getCachedApp(param){
         }
     }
 }
+
+/**
+ * 
+ */
+export function getGlobalSetting(key){
+    const settingString = localStorage.getItem('setting');
+    let setting = {};
+    try{
+        setting = JSON.parse(settingString);
+    }catch{
+    }
+    if(!setting){
+        setting = {
+            pageSize:10
+        }
+    }
+    if(setting[key]){
+        return setting[key]
+    }else{
+        return null;
+    }
+};
+export function setGlobalSetting(payload){
+    const settingString = localStorage.getItem('setting');
+    let setting = {};
+    try{
+        setting = JSON.parse(settingString);
+    }catch{
+    }
+    if(!setting){
+        setting = {
+            pageSize:10
+        }
+    }
+    const newData = {
+        ...setting,
+        ...payload
+    };
+    localStorage.setItem('setting',JSON.stringify(newData));
+}

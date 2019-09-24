@@ -9,6 +9,7 @@ import { Card, Form, Spin, Transfer, Button } from 'antd';
 import { routerRedux } from 'dva/router';
 import PageHeaderWrapper from '../../../components/PageHeaderWrapper';
 import styles from './Assign.less';
+import {getCachedApp} from '@/utils/utils';
 
 @connect(({ assignUsers, loading }) => ({
     assignUsers,
@@ -17,10 +18,22 @@ import styles from './Assign.less';
 @Form.create()
 class AssignUserToRole extends PureComponent {
     componentDidMount() {
-        const { dispatch, match: { params } } = this.props;
+        const { dispatch, location: { query },match: { params } } = this.props;
+        //将当前的网址上的appId和appName缓存起来，如果网址没有这两参数，自动从缓存读取
+        const currentApp = getCachedApp(query);
+        if (!currentApp) {
+            routerRedux.push("/exception/404");
+            return;
+        }else{
+            dispatch({
+                type:'app/setCurrentApp',
+                payload:currentApp
+            });
+        }
+
         dispatch({
             type: 'assignUsers/list',
-            payload: { rid: params.rid },
+            payload: { rid: params.rid ,appId:currentApp.id},
         });
     }
 

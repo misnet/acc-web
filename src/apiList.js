@@ -21,6 +21,7 @@ export default {
         USER_LOGIN: 'acc.user.login',
         // 用户查询
         USER_LIST: 'acc.user.list',
+        USER_ALL_LIST:'acc.user.alllist',
         // 用户创建
         USER_CREATE: 'acc.user.create',
         // 用户更新

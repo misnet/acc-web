@@ -23,7 +23,7 @@ export function queryCurrent() {
 }
 
 /**
- * 查询用户列表
+ * 查询指定应用的用户列表
  * @param params  {page: 1, limit: 10}
  * @returns {Object}
  */
@@ -31,6 +31,24 @@ export function queryUsers(params) {
   const defaultParam = {page: 1, limit: 10};
 
   return request(APILIST.BACKEND.USER_LIST, {
+    'method': 'POST',
+    body: {
+      ...defaultParam,
+      ...params
+    }
+  });
+}
+
+
+/**
+ * 查询用户列表
+ * @param params  {page: 1, limit: 10}
+ * @returns {Object}
+ */
+export function queryAllUsers(params) {
+  const defaultParam = {page: 1, limit: 10};
+
+  return request(APILIST.BACKEND.USER_ALL_LIST, {
     'method': 'POST',
     body: {
       ...defaultParam,
