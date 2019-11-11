@@ -24,6 +24,7 @@ export default [
             {path:"/dashboard/workplace",component:"./Dashboard/Workplace"},
             {path:"/sys/userlist",component:"./Sys/UserList"},
             {path:"/sys/all-userlist",component:"./Sys/AllUserList"},
+            {path:"/sys/apilog-list",component:"./Sys/ApiLogList"},
             {path:"/sys/menulist",component:"./Sys/MenuList"},
             {
                 path:"/sys/rolelist",

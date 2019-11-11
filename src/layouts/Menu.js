@@ -12,6 +12,12 @@ const menuData = [
     path: 'sys/all-userlist',
     
   },
+  {
+    name: 'API访问',
+    icon: 'database',
+    path: 'sys/apilog-list',
+    
+  },
 ];
 
 function formatter(data, parentPath = '/', parentAuthority) {

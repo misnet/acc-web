@@ -68,6 +68,8 @@ export default {
          */
         SAVE_OPERATIONS_TO_ROLE:'acc.role.save.operations',
         RESOURCE_XML_PARSE:'acc.role.resourcesxml.parse',
-        RESOURCE_XML_IMPORT:'acc.role.resourcesxml.import'
+        RESOURCE_XML_IMPORT:'acc.role.resourcesxml.import',
+
+        APILOG_LIST:"acc.apilog.list"
     },
 };
