@@ -17,7 +17,7 @@ import {
   Affix,
   Icon,
   Modal,
-  Input
+  Tag
 } from 'antd'
 import PageHeaderWrapper from '../../components/PageHeaderWrapper';
 import UserModal from './UserModal';
@@ -123,6 +123,17 @@ class ListPage extends PureComponent {
         title: '响应时间（秒）',
         dataIndex: 'duration',
         key: 'duration',
+      }, {
+        title: '状态码',
+        dataIndex: 'status',
+        key: 'status',
+        render:(text,record)=>{
+            if(record.result){
+                return record.result.status==0?<Tag color="green">0</Tag>:<Tag color="#f50">{record.result.status}</Tag>
+            } else{
+                return '无';
+            }
+        }
       }, {
         title: '参数',
         dataIndex: 'params',
