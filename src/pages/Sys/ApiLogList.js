@@ -91,7 +91,7 @@ class ListPage extends PureComponent {
         this.props.dispatch({
             type:'global/ipSearch',
             payload:{
-                ip:'117.30.208.138'
+                ip
             },
             callback:(ipInfo)=>{
                 let region = [];
