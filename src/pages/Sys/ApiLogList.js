@@ -42,7 +42,8 @@ class ListPage extends PureComponent {
     this.state = {
         showModal:false,
         content:'',
-        title:''
+        title:'',
+        ipDetail:''
     }
   }
   componentDidMount () {
@@ -84,32 +85,46 @@ class ListPage extends PureComponent {
     })
   }
   onShowIp=(ip)=>{
-      this.props.dispatch({
-          type:'global/ipSearch',
-          payload:{
-            ip:'117.30.208.138'
-          }
-      });
+      const key = 'IP_'+ip;
+      let address = sessionStorage.getItem(key);
+      if(!address){
+        this.props.dispatch({
+            type:'global/ipSearch',
+            payload:{
+                ip:'117.30.208.138'
+            },
+            callback:(ipInfo)=>{
+                let region = [];
+                if(ipInfo.country){
+                    region.push(ipInfo.country)
+                };
+                if(ipInfo.prov){
+                    region.push(ipInfo.prov)
+                };
+                if(ipInfo.city){
+                    region.push(ipInfo.city)
+                };
+                if(ipInfo.area){
+                    region.push(ipInfo.area)
+                };
+                address = region.join(' ');
+                sessionStorage.setItem(key,address);
+                this.setState({
+                    ipDetail:address
+                });
+            }
+        });
+      }else{
+          this.setState({
+              ipDetail:address
+          });
+      }
   }
   showIpDetail=()=>{
-    const ipInfo = this.props.global.ipInfo;
     if(this.props.ipLoading){
         return '加载中...';
     }else{
-        let region = [];
-        if(ipInfo.country){
-            region.push(ipInfo.country)
-        };
-        if(ipInfo.prov){
-            region.push(ipInfo.prov)
-        };
-        if(ipInfo.city){
-            region.push(ipInfo.city)
-        };
-        if(ipInfo.area){
-            region.push(ipInfo.area)
-        };
-        return region.join(' ');
+        return this.state.ipDetail;
     }   
   }
   render () {
@@ -169,7 +184,7 @@ class ListPage extends PureComponent {
           title:'IP',
           dataIndex:'ip',
           key:'ip',
-          render:(text,record)=><Popover content={this.showIpDetail()} trigger="click" onClick={()=>this.onShowIp(record.ip)}><a>{record.ip}</a></Popover>
+          render:(text,record)=><Popover content={this.showIpDetail(record.ip)} trigger="click" onClick={()=>this.onShowIp(record.ip)}><a>{record.ip}</a></Popover>
       },{
         title: '参数',
         dataIndex: 'params',
