@@ -14,7 +14,7 @@ import {
   Popconfirm,
   Button,
   Divider,
-  Affix,
+  Popover,
   Icon,
   Modal,
   Tag
@@ -23,17 +23,18 @@ import PageHeaderWrapper from '../../components/PageHeaderWrapper';
 import UserModal from './UserModal';
 import styles from '../common.less'
 import { formatMessage } from 'umi-plugin-react/locale';
-import JSONPretty from 'react-json-pretty';
 import ReactJson from 'react-json-view';
-const JSONPrettyMon = require('react-json-pretty/dist/monikai');
+
 
 import {getCachedApp,getGlobalSetting, setGlobalSetting} from '@/utils/utils';
 
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',')
 
-@connect(({apiLog, loading}) => ({
-    apiLog,
-  loading: loading.effects['apiLog/apiLogList']
+@connect(({apiLog, loading,global}) => ({
+   apiLog,
+   loading: loading.effects['apiLog/apiLogList'],
+   global,
+   ipLoading:loading.effects['global/ipSearch']
 }))
 class ListPage extends PureComponent {
   constructor(props){
@@ -82,10 +83,40 @@ class ListPage extends PureComponent {
         content:jsonData
     })
   }
-  
+  onShowIp=(ip)=>{
+      this.props.dispatch({
+          type:'global/ipSearch',
+          payload:{
+            ip:'117.30.208.138'
+          }
+      });
+  }
+  showIpDetail=()=>{
+    const ipInfo = this.props.global.ipInfo;
+    if(this.props.ipLoading){
+        return '加载中...';
+    }else{
+        let region = [];
+        if(ipInfo.country){
+            region.push(ipInfo.country)
+        };
+        if(ipInfo.prov){
+            region.push(ipInfo.prov)
+        };
+        if(ipInfo.city){
+            region.push(ipInfo.city)
+        };
+        if(ipInfo.area){
+            region.push(ipInfo.area)
+        };
+        return region.join(' ');
+    }   
+  }
   render () {
     const {loading, 
       apiLog: {data},
+      global:{ipInfo},
+      ipLoading
     } = this.props
     
     // const {selectedRows} = this.state;
@@ -135,6 +166,11 @@ class ListPage extends PureComponent {
             }
         }
       }, {
+          title:'IP',
+          dataIndex:'ip',
+          key:'ip',
+          render:(text,record)=><Popover content={this.showIpDetail()} trigger="click" onClick={()=>this.onShowIp(record.ip)}><a>{record.ip}</a></Popover>
+      },{
         title: '参数',
         dataIndex: 'params',
         key: 'params',

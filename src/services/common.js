@@ -25,3 +25,9 @@ export async function regionList(params) {
         body: params,
     });
 }
+export async function ipSearch(params) {
+    return request(APILIST.COMMON.IP_SEARCH, {
+        method: 'POST',
+        body: params,
+    });
+}

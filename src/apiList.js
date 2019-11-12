@@ -6,7 +6,8 @@
 export default {
     COMMON:{
         OSSETTING:'common.osssetting',
-        REGION_LIST:'common.region.list'
+        REGION_LIST:'common.region.list',
+        IP_SEARCH:'common.ip'
     },
     BACKEND: {
         // ACC查询

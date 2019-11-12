@@ -1,5 +1,5 @@
 import { queryNotices } from '@/services/api';
-import {queryOssSetting,regionList} from '@/services/common';
+import {queryOssSetting,regionList,ipSearch} from '@/services/common';
 /**
  * 给指定路径的地区对象赋值子节点列表
  * @param {*} regionList 地区列表
@@ -33,7 +33,8 @@ export default {
             RequestId:"",
             AssumeRoleUser:{}
         },
-        regionList:[]
+        regionList:[],
+        ipInfo:{}
     },
 
     effects: {
@@ -67,6 +68,18 @@ export default {
                 });
                 if(typeof callback === 'function'){
                     callback(regionList);
+                }
+            }
+        },
+        *ipSearch({payload,callback},{call,put}){
+            const responseData = yield call(ipSearch,payload);
+            if(responseData.status === 0){
+                yield put({
+                    type:'saveIpInfo',
+                    payload:responseData.data
+                });
+                if(typeof callback=='function'){
+                    callback(responseData.data);
                 }
             }
         },
@@ -139,6 +152,12 @@ export default {
     },
 
     reducers: {
+        saveIpInfo(state,{payload}){
+            return {
+                ...state,
+                ipInfo:payload
+            }
+        },
         setRegionList(state,{payload}){
             return {
                 ...state,
