@@ -26,8 +26,7 @@ export default {
                     dll: {
                         include: ['dva', 'dva/router', 'dva/saga', 'dva/fetch'],
                         exclude: ['@babel/runtime'],
-                    },
-                    hardSource: false,
+                    }
                 }
                 : {}),
         }],
@@ -40,7 +39,7 @@ export default {
         "process.env.API_GATEWAY":'https://acc.api.depoga.com/v3/gateway',
         "process.env.API_KEY": 1000,
         "process.env.TITLE":'KUGA ACC',
-        "process.env.API_SECRET":'IsuZLMPJDVnwYp8XYp/Pf4HH6e5PY28c8oQy8akF5vWxMjvvSNORdPvDu6HK9eOAGcVmDk1jLRYIkAcGu7tgUQ=='
+        "process.env.API_SECRET":'43c84d3848059992ab39d41378a360eb'
     },
     lessLoaderOptions: {
         javascriptEnabled: true,
