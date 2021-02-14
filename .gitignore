@@ -7,3 +7,4 @@ src/pages/.umi
 .history
 yarn.lock
 yarn-error.log
+.env
