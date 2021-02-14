@@ -1,49 +1,36 @@
+import { defineConfig } from 'umi';
 import pageRoutes from './router.config';
 import defaultSettings from '../src/defaultSettings';
-import os from "os";
+import packageJson from '../package.json';
 // ref: https://umijs.org/config/
-export default {
-    plugins: [
-        // ref: https://umijs.org/plugin/umi-plugin-react.html
-        ['umi-plugin-react', {
-            antd: true,
-            // dva: {
-            //   immer:true
-            // },
-            dva:{
-                hmr:true
-            },
-            dynamicImport: true,
-            title: 'acc-web',
-            // dll: {
-            //     include: ['dva', 'dva/router', 'dva/saga', 'dva/fetch', 'antd/es']
-            // },
-            locale: {
-                enable: true, // default false
-                default: 'zh-CN', // default zh-CN
-                baseNavigator: true
-            },
-            targets:['ie9'],
-            ...(!process.env.TEST && os.platform() === 'darwin'
-                ? {
-                    dll: {
-                        include: ['dva', 'dva/router', 'dva/saga', 'dva/fetch'],
-                        exclude: ['@babel/runtime'],
-                    }
-                }
-                : {}),
-        }],
-    ],
+export default defineConfig({
+    title: 'acc-web',
+
+    dva: {},
+    locale: {
+        antd: true, // default false
+        default: 'zh-CN', // default zh-CN
+        title: true
+    },
+    request: {},
+    targets: {
+        ie: 11,
+    },
     //路由
     routes: pageRoutes,
     define: {
-        "APP_TYPE": process.env.APP_TYPE || ''
+        APP_VERSION: packageJson.version,
     },
-    lessLoaderOptions: {
-        javascriptEnabled: true,
+
+    terserOptions: {
+        compress: {
+            warnings: false,
+            drop_console: true, //console
+            pure_funcs: ['console.log'], //移除console
+        },
     },
     theme: {
 
         'primary-color': defaultSettings.primaryColor,
     }
-}
+});

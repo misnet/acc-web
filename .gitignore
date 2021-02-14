@@ -4,3 +4,6 @@ dist
 src/pages/.umi
 .umirc.local.js
 .umi
+.history
+yarn.lock
+yarn-error.log
