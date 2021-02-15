@@ -4,25 +4,33 @@
 import React, { useState } from 'react';
 import { SaveOutlined } from '@ant-design/icons';
 import { Divider, Button, Form, Spin, Card, Input, Affix, Row, Col, message } from 'antd';
-import { history, useIntl } from 'umi';
+import { history, useIntl, useDispatch } from 'umi';
 import styles from '../common.less';
 import PageHeaderWrapper from '../../components/PageHeaderWrapper';
 import _ from 'lodash';
 import md5 from 'md5';
 export default () => {
     const intl = useIntl();
+    const [form] = Form.useForm();
     const FormItem = Form.Item;
+    const dispatch = useDispatch();
     const [confirmDirty, setConfirmDirty] = useState(false);
-    const onSave = () => {
-        dispatch({
-            type: 'user/changePassword',
-            payload: {
-                password: md5(values.password)
-            },
-            callback: () => {
-                message.success('密码修改成功');
-            }
+    const onSave = (values) => {
+        console.log('values', values);
+        form.validateFields().then(values => {
+            dispatch({
+                type: 'user/changePassword',
+                payload: {
+                    password: values.password//remove md5
+                },
+                callback: () => {
+                    message.success('密码修改成功');
+                }
+            })
+        }).catch(err => {
+
         })
+
     };
     const handleConfirmBlur = (e) => {
         const value = e.target.value;
@@ -30,7 +38,7 @@ export default () => {
             confirmDirty: !prevState
         });
     }
-    compareToFirstPassword = (rule, value, callback) => {
+    const compareToFirstPassword = (rule, value, callback) => {
         const form = this.props.form;
         if (value && value !== form.getFieldValue('password')) {
             callback('两次输入的密码不一致');
@@ -39,7 +47,7 @@ export default () => {
         }
     }
 
-    validateToNextPassword = (rule, value, callback) => {
+    const validateToNextPassword = (rule, value, callback) => {
         if (value && confirmDirty) {
             form.validateFields(['repassword'], { force: true });
         }
@@ -50,14 +58,14 @@ export default () => {
             <Card bordered={false}>
                 <Affix offsetTop={64} className={styles.navToolbarAffix}>
                     <div className={styles.navToolbar}>
-                        <Button icon={<SaveOutlined />} type="primary" onClick={this.onSave}>
+                        <Button icon={<SaveOutlined />} type="primary" onClick={onSave}>
                             {intl.formatMessage({ id: 'form.save' })}
                         </Button>
                         <Divider />
                     </div>
                 </Affix>
                 <div className={styles.tableList}>
-                    <Form onFinish={onSave}>
+                    <Form form={form}>
                         <Row>
                             <Col xs={{ span: 24 }} sm={{ span: 24 }}>
                                 <FormItem

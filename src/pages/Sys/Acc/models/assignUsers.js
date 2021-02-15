@@ -12,32 +12,33 @@ export default {
     },
 
     effects: {
-        *unassign({ payload }, { call, put }) {
+        *unassign({ payload, callback }, { call, put }) {
             yield call(unassignUser, payload);
 
-            yield put({
-                type: 'list',
-                payload: { rid: payload.rid },
-            });
+
+            if ('function' === typeof callback) {
+                callback();
+            }
         },
-        *assign({ payload }, { call, put }) {
+        *assign({ payload, callback }, { call, put }) {
             yield call(assignUser, payload);
-            yield put({
-                type: 'list',
-                payload: { rid: payload.rid },
-            });
+
+            if ('function' === typeof callback) {
+                callback();
+            }
+
         },
         //列出已分配的用户
         *list({ payload }, { call, put }) {
-            console.log('response========');
             const response = yield call(listUser, payload);
-            //console.log('response', response);
+            console.log('response--', response);
             let data = {};
             if (typeof response['data'] !== 'undefined') {
                 data = response['data'];
             } else {
                 data = {};
             }
+            console.log('data', data);
             yield put({
                 type: 'save',
                 payload: data,

@@ -5,21 +5,25 @@
  */
 import React, { useEffect } from 'react';
 import { ArrowLeftOutlined } from '@ant-design/icons';
-import { Card, Spin, Form, Transfer, Button } from 'antd';
+import { Card, Spin, Affix, Divider, Transfer, Button } from 'antd';
 import PageHeaderWrapper from '../../../components/PageHeaderWrapper';
-import styles from './Assign.less';
+
+import styles from "../../common.less";
 import { getCachedApp } from '@/utils/utils';
 import { history, useDispatch, useSelector } from 'umi';
 
-export default () => {
+export default (props) => {
     const assignUsers = useSelector(state => state.assignUsers);
     const loadingEffect = useSelector(state => state.loading);
     const loading = loadingEffect.effects['assignUsers/list'];
     const dispatch = useDispatch();
+    const { query } = props.location;
+    const { params } = props.match;
+    const currentApp = getCachedApp(query);
     useEffect(() => {
-        const { params } = props.match;
+
         //将当前的网址上的appId和appName缓存起来，如果网址没有这两参数，自动从缓存读取
-        const currentApp = getCachedApp(query);
+
         if (!currentApp) {
             history.push("/exception/404");
             return;
@@ -29,12 +33,18 @@ export default () => {
                 payload: currentApp
             });
         }
+        fetchUserList(params.rid, currentApp.id);
+        // dispatch({
+        //     type: 'assignUsers/list',
+        //     payload: { rid: params.rid, appId: currentApp.id },
+        // });
+    }, []);
+    const fetchUserList = (rid, appId) => {
         dispatch({
             type: 'assignUsers/list',
-            payload: { rid: params.rid, appId: currentApp.id },
+            payload: { rid, appId },
         });
-    }, []);
-
+    }
     /**
      * 分配或取消分配操作
      * @param tagetKeys
@@ -47,6 +57,9 @@ export default () => {
         dispatch({
             type: `assignUsers/${dire}`,
             payload: { uid: uids.join(','), rid: params.rid },
+            callback: () => {
+                fetchUserList(params.rid, currentApp.id);
+            }
         });
     };
     const { data: { assigned, unassigned } }
@@ -63,22 +76,25 @@ export default () => {
     return (
         <PageHeaderWrapper title="分配用户">
             <Card bordered={false}>
-                <div className={styles.operatorSection}>
-                    <Button icon={<ArrowLeftOutlined />} type="primary" onClick={returnBack}>
-                        返回
-                        </Button>
+                <Affix offsetTop={64} className={styles.navToolbarAffix}>
+                    <div className={styles.navToolbar}>
+                        <Button icon={<ArrowLeftOutlined />} type="primary" onClick={returnBack}>
+                            返回</Button>
+                        <Divider />
+                    </div>
+                </Affix>
+                <div className={styles.tableList}>
+                    <Spin spinning={loading} size="large">
+                        <Transfer
+                            titles={['未分配的用户', '已分配的用户']}
+                            rowKey={record => record.uid}
+                            dataSource={unassigned}
+                            render={record => (record.username ? record.username : '')}
+                            targetKeys={chosenList}
+                            onChange={onTransferChange}
+                        />
+                    </Spin>
                 </div>
-
-                <Spin spinning={loading} size="large">
-                    <Transfer
-                        titles={['未分配的用户', '已分配的用户']}
-                        rowKey={record => record.uid}
-                        dataSource={unassigned}
-                        render={record => (record.username ? record.username : '')}
-                        targetKeys={chosenList}
-                        onChange={onTransferChange}
-                    />
-                </Spin>
             </Card>
         </PageHeaderWrapper>
     );
