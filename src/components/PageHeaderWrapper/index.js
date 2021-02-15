@@ -1,6 +1,5 @@
 import React from 'react';
-import { FormattedMessage } from 'umi-plugin-react/locale';
-import Link from 'umi/link';
+import { Link } from 'umi';
 import PageHeader from '@/components/PageHeader';
 import { connect } from 'dva';
 import GridContent from './GridContent';
@@ -14,14 +13,14 @@ const PageHeaderWrapper = ({ children, contentWidth, wrapperClassName, top, ...r
       {value => (
         <PageHeader
           wide={contentWidth === 'Fixed'}
-          home={<FormattedMessage id="menu.home" defaultMessage="Home" />}
+          home={'主页'}
           {...value}
           key="pageheader"
           {...restProps}
           linkElement={Link}
           itemRender={item => {
             if (item.locale) {
-              return <FormattedMessage id={item.locale} defaultMessage={item.name} />;
+              return item.name;
             }
             return item.name;
           }}

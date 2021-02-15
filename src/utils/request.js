@@ -2,9 +2,9 @@ import { notification } from 'antd';
 import { mapKeys, isBoolean } from 'lodash';
 import md5 from 'md5';
 import systemConfig from '../config';
-import {getUserProfile} from './auth';
+import { getUserProfile } from './auth';
 import { sortKeysBy } from './utils';
-import router from 'umi/router';
+import { history } from 'umi';
 
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
@@ -23,7 +23,7 @@ const codeMessage = {
   503: '服务不可用，服务器暂时过载或维护。',
   504: '网关超时。',
 };
-function parseJSON (response) {
+function parseJSON(response) {
   return response.json();
 }
 function checkStatus(response) {
@@ -59,8 +59,8 @@ export default function request(url, options) {
     mode: 'no-cors',
   };
   const origin = `${apiConfig.gateway.split('//')[0]}//${apiConfig.gateway.split('//')[1].split('/')[0]}`;
-  let newOptions = {...defaultOptions, ...options};
-  if( window.location.origin != origin ){
+  let newOptions = { ...defaultOptions, ...options };
+  if (window.location.origin != origin) {
     newOptions['mode'] = 'cors';
   }
   newOptions.headers = {
@@ -68,7 +68,7 @@ export default function request(url, options) {
     'Content-Type': 'application/json; charset=utf-8',
     ...newOptions.headers,
   };
-  if(!newOptions.body){
+  if (!newOptions.body) {
     newOptions.body = {};
   }
   newOptions.body['appkey'] = apiConfig.appKey;
@@ -81,13 +81,13 @@ export default function request(url, options) {
   let newParams = {};
   //newOptions.body中有些项的值是null或undefined，这些项对服务端是无用的，要过滤掉，否则可能引起签名失败
   mapKeys(newOptions.body, function (value, key) {
-    if ( value != undefined) {
+    if (value != undefined) {
       var t = value == null ? '' : value;
       if (isBoolean(t)) {
         t = t ? 1 : '';
-      }else if(Array.isArray(t) ||(typeof t =='object' && t!==null)){
+      } else if (Array.isArray(t) || (typeof t == 'object' && t !== null)) {
         t = JSON.stringify(t);
-      }else if(t === null){
+      } else if (t === null) {
         t = '';
       }
       sign += key + t;
@@ -98,31 +98,31 @@ export default function request(url, options) {
   newParams['sign'] = md5(newParams['sign']).toUpperCase();
   newOptions.body = JSON.stringify(newParams);
 
-  return fetch(apiConfig.gateway + '/'+url, newOptions)
+  return fetch(apiConfig.gateway + '/' + url, newOptions)
     .then(checkStatus).then(parseJSON)
     .then(resp => {
-      switch(resp.status){
+      switch (resp.status) {
         case 99000:
-           router.push('/500');
-           break;
+          history.push('/500');
+          break;
         case 99004:
-           //accessToken无效了
-           window.g_app._store.dispatch({
-             type:'login/refreshToken',
-             payload:{
-               refreshToken:sessionStorage.getItem('console.refreshToken')
-             }
-           });
+          //accessToken无效了
+          window.g_app._store.dispatch({
+            type: 'login/refreshToken',
+            payload: {
+              refreshToken: sessionStorage.getItem('console.refreshToken')
+            }
+          });
 
-           notification.error({
+          notification.error({
             message: '警告提示',
             description: '登陆状态失效，正重新刷新，如页面不正常，请刷新一下',
           });
-           break;
+          break;
         case 99006:
-           //刷新token无效了
-           window.g_app._store.dispatch({
-            type:'login/logout'
+          //刷新token无效了
+          window.g_app._store.dispatch({
+            type: 'login/logout'
           });
           break;
         default:
@@ -136,40 +136,40 @@ export default function request(url, options) {
             }
           }
       }
-    
-    return resp;
 
-  }).catch((error) => {
-    // const { dispatch } = store;
-    // const status = e.name;
-    // if (status === 401) {
-    //   dispatch({
-    //     type: 'login/logout',
-    //   });
-    //   return;
-    // }
-    // if (status === 403) {
-    //   dispatch(routerRedux.push('/exception/403'));
-    //   return;
-    // }
-    // if (status <= 504 && status >= 500) {
-    //   dispatch(routerRedux.push('/exception/500'));
-    //   return;
-    // }
-    // if (status >= 404 && status < 422) {
-    //   dispatch(routerRedux.push('/exception/404'));
-    // }
-    if (error.code) {
-      notification.error({
-        message: error.name,
-        description: error.message,
-      });
-    }else{
-      notification.error({
-        message: '网络异常',
-        description: '我非圣贤，孰能无过！喝杯茶再刷新重试！',
-      });
-    }
-    throw error;
-  });
+      return resp;
+
+    }).catch((error) => {
+      // const { dispatch } = store;
+      // const status = e.name;
+      // if (status === 401) {
+      //   dispatch({
+      //     type: 'login/logout',
+      //   });
+      //   return;
+      // }
+      // if (status === 403) {
+      //   dispatch(routerRedux.push('/exception/403'));
+      //   return;
+      // }
+      // if (status <= 504 && status >= 500) {
+      //   dispatch(routerRedux.push('/exception/500'));
+      //   return;
+      // }
+      // if (status >= 404 && status < 422) {
+      //   dispatch(routerRedux.push('/exception/404'));
+      // }
+      if (error.code) {
+        notification.error({
+          message: error.name,
+          description: error.message,
+        });
+      } else {
+        notification.error({
+          message: '网络异常',
+          description: '我非圣贤，孰能无过！喝杯茶再刷新重试！',
+        });
+      }
+      throw error;
+    });
 }

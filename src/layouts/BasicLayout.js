@@ -8,7 +8,6 @@ import { ContainerQuery } from 'react-container-query';
 import classNames from 'classnames';
 import pathToRegexp from 'path-to-regexp';
 import Media from 'react-media';
-import { formatMessage } from 'umi/locale';
 import Authorized from '@/utils/Authorized';
 import logo from '../assets/logo.svg';
 import Footer from './Footer';
@@ -85,7 +84,7 @@ class BasicLayout extends React.PureComponent {
             type: 'user/fetchCurrent',
         });
         dispatch({
-            type:'menu/getMenuData'
+            type: 'menu/getMenuData'
         })
         // let { menuList } = getUserProfile();
         // console.log('getUserProfile menuList', menuList);
@@ -117,7 +116,7 @@ class BasicLayout extends React.PureComponent {
      */
     getBreadcrumbNameMap() {
         const routerMap = {};
-        const {menuData} = this.props;
+        const { menuData } = this.props;
         const flattenMenuData = data => {
             data.forEach(menuItem => {
                 if (menuItem.children) {
@@ -167,7 +166,7 @@ class BasicLayout extends React.PureComponent {
         return {
             margin: '24px 24px 0',
             paddingTop: fixedHeader ? 64 : 0,
-            zIndex:1
+            zIndex: 1
         };
     };
 
@@ -229,7 +228,7 @@ class BasicLayout extends React.PureComponent {
                     <Content style={this.getContentStyle()}>
                         <Authorized
                             // authority={routerConfig && routerConfig.authority}
-                            authority={()=>hasPermission('root')}
+                            authority={() => hasPermission('root')}
                             noMatch={<Exception403 />}
                         >
 
@@ -262,7 +261,7 @@ export default connect(({ global, setting, menu }) => ({
     collapsed: global.collapsed,
     layout: setting.layout,
     ...setting,
-    menuData:menu.menuData
+    menuData: menu.menuData
 }))(props => (
     <Media query="(max-width: 599px)">
         {isMobile => <BasicLayout {...props} isMobile={isMobile} />}

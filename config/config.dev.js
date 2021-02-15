@@ -8,5 +8,6 @@ export default defineConfig({
         "process.env.API_GATEWAY": 'http://acc.api.kuga.wang/v3/gateway',
         "process.env.API_KEY": 1000,
         "process.env.TITLE": 'ACC.DEV',
+        "process.env.API_SECRET": '43c84d3848059992ab39d41378a360eb'
     }
 });

@@ -3,23 +3,23 @@
  * @author Donny
  *
  */
-import { Form, Input, Modal, Checkbox, InputNumber, Radio } from 'antd';
-import React from 'react';
+import { Input, Modal, Checkbox, InputNumber, Radio, Form } from 'antd';
+import { useEffect } from 'react';
+import { } from 'umi';
 import PropTypes from 'prop-types';
 import DICT from '@/dict';
-const FormItem = Form.Item;
-const roleModal = ({
+
+export default ({
     item = {},
     onOk,
-    form: { getFieldDecorator, validateFields, getFieldsValue },
     ...modalProps
 }) => {
+    const FormItem = Form.Item;
+    const [form] = Form.useForm();
     const submitForm = () => {
-        validateFields(err => {
-            if (!err) {
-                onOk({ ...getFieldsValue() });
-            }
-        });
+        form.validateFields().then(values => {
+            onOk({ ...values });
+        }).catch(err => { })
     };
     const modalOpts = {
         onOk: submitForm,
@@ -56,27 +56,22 @@ const roleModal = ({
     };
     return (
         <Modal {...modalOpts}>
-            <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="角色名称">
-                {getFieldDecorator('name', {
-                    initialValue: item.name,
-                    rules: [
-                        {
-                            required: true,
-                            message: '请输入角色名称',
-                        },
-                    ],
-                })(<Input placeholder="请输入" maxLength={50} />)}
-            </FormItem>
-            <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="类型">
-                {getFieldDecorator('roleType', {
-                    initialValue: parseInt(item.roleType),
-                    rules: [
-                        {
-                            required: true,
-                            message: '请选择好类型',
-                        },
-                    ],
-                })(
+            <Form form={form}>
+                <FormItem name='name' initialValue={item.name} rules={[
+                    {
+                        required: true,
+                        message: '请输入角色名称',
+                    },
+                ]} labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="角色名称">
+                    <Input placeholder="请输入" maxLength={50} />
+                </FormItem>
+                <FormItem name='roleType' rules={[
+                    {
+                        required: true,
+                        message: '请选择好类型',
+                    },
+                ]} initialValue={parseInt(item.roleType)} labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="类型">
+
                     <Radio.Group placeholder="请选择类型" style={{ width: '100%' }}>
                         {roleTypeList.map((opt, e) => {
                             const optionComponent = [];
@@ -89,18 +84,15 @@ const roleModal = ({
                             return optionComponent;
                         })}
                     </Radio.Group>
-                )}
-            </FormItem>
-            <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="分配策略">
-                {getFieldDecorator('assignPolicy', {
-                    initialValue: parseInt(item.assignPolicy),
-                    rules: [
-                        {
-                            required: true,
-                            message: '请选择好策略',
-                        },
-                    ],
-                })(
+
+                </FormItem>
+                <FormItem rules={[
+                    {
+                        required: true,
+                        message: '请选择好策略',
+                    },
+                ]} name='assignPolicy' initialValue={parseInt(item.assignPolicy)} labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="分配策略">
+
                     <Radio.Group style={{ width: '100%' }}>
                         {assignPolicyList.map((opt, e) => {
                             const optionComponent = [];
@@ -113,37 +105,23 @@ const roleModal = ({
                             return optionComponent;
                         })}
                     </Radio.Group>
-                )}
-            </FormItem>
+                </FormItem>
 
-            <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="优先级">
-                {getFieldDecorator('priority', {
-                    initialValue: item.priority ? item.priority : 0,
-                    rules: [
-                        {
-                            required: true,
-                            message: '请输入优先级，正整数',
-                        },
-                    ],
-                })(<InputNumber min={0} max={99999} placeholder="请输入" maxLength={5} />)}
-            </FormItem>
-            <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="默认权限">
-                {getFieldDecorator('defaultAllow', {
-                    initialValue:item.defaultAllow,
-                    valuePropName: 'checked',
-                })(
-                    <Checkbox name="defaultAllow"  value={1}>
+                <FormItem rules={[
+                    {
+                        required: true,
+                        message: '请输入优先级，正整数',
+                    },
+                ]} name='priority' initialValue={item.priority ? item.priority : 0} labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="优先级">
+                    <InputNumber min={0} max={99999} placeholder="请输入" maxLength={5} />
+                </FormItem>
+                <FormItem name='defaultAllow' initialValue={item.defaultAllow} valuePropName='checked' labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="默认权限">
+
+                    <Checkbox name="defaultAllow" value={1}>
                         允许
                     </Checkbox>
-                )}
-            </FormItem>
-        </Modal>
+                </FormItem>
+            </Form>
+        </Modal >
     );
 };
-roleModal.propTypes = {
-    form: PropTypes.object.isRequired,
-    type: PropTypes.string,
-    item: PropTypes.object,
-    onOk: PropTypes.func,
-};
-export default Form.create()(roleModal);

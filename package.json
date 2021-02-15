@@ -2,9 +2,9 @@
   "private": true,
   "scripts": {
     "start": "umi dev",
-    "start-prod": "cross-env UMI_ENV=prod APP_TYPE=site umi dev",
-    "build-prod": "cross-env UMI_ENV=prod APP_TYPE=site umi build",
-    "build-test": "cross-env UMI_ENV=test APP_TYPE=site umi build",
+    "start-prod": "cross-env UMI_ENV=prod umi dev",
+    "build-prod": "cross-env UMI_ENV=prod umi build",
+    "build-test": "cross-env UMI_ENV=test umi build",
     "build-dev": "cross-env UMI_ENV=dev APP_TYPE=site umi build",
     "build": "umi build",
     "test": "umi test",

@@ -1,6 +1,6 @@
-import { routerRedux } from 'dva/router';
+import { history } from 'umi';
 import { reloadAuthorized } from '../utils/Authorized';
-import { userLogin,refreshAccessToken } from '../services/user';
+import { userLogin, refreshAccessToken } from '../services/user';
 import {
     setAuthority,
     hasAuthority,
@@ -21,11 +21,11 @@ export default {
         realname: '',
         mobile: '',
         gender: 0,
-        type:'account'
+        type: 'account'
     },
 
     effects: {
-        *refreshToken({payload},{call,put}){
+        *refreshToken({ payload }, { call, put }) {
             let response = { data: {} };
             response = yield call(refreshAccessToken, payload);
             let data = {};
@@ -57,7 +57,7 @@ export default {
 
             let response = { data: {} };
             //if (payload.type == 'account') {
-                response = yield call(userLogin, payload);
+            response = yield call(userLogin, payload);
             //}
             let data = {};
             if (typeof response['data']['uid'] != 'undefined') {
@@ -81,7 +81,7 @@ export default {
             });
             if (data.uid) {
                 reloadAuthorized();
-                yield put(routerRedux.push('/'));
+                history.push('/');
             }
         },
         *logout(_, { put, select }) {
@@ -102,7 +102,7 @@ export default {
                     },
                 });
                 reloadAuthorized();
-                yield put(routerRedux.push('/user/login'));
+                history.push('/user/login');
             }
         },
     },

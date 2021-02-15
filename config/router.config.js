@@ -13,7 +13,9 @@ export default [
     {
         path: "/",
         component: "../layouts/BasicLayout",
-        Routes: ['src/pages/Authorized'],
+        wrappers: [
+            '@/layouts/AuthLayout',
+        ],
         routes: [
 
             { path: "/", redirect: "/dashboard/workplace" },

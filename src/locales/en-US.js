@@ -26,5 +26,5 @@ export default {
   ...settingDrawer,
   ...settings,
   ...pwa,
-    ...form
+  ...form
 };

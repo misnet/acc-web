@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
-import { Layout, Icon } from 'antd';
+import { CopyrightOutlined, GithubOutlined } from '@ant-design/icons';
+import { Layout } from 'antd';
 import GlobalFooter from '@/components/GlobalFooter';
 
 const { Footer } = Layout;
@@ -15,14 +16,14 @@ const FooterView = () => (
           },
           {
               key: 'github',
-              title: <Icon type="github" />,
+              title: <GithubOutlined />,
               href: 'https://github.com/misnet',
               blankTarget: true,
           },
       ]}
       copyright={
         <Fragment>
-            Copyright <Icon type="copyright" /> 2018 Kuga.wang
+            Copyright <CopyrightOutlined /> 2018 Kuga.wang
         </Fragment>
       }
     />

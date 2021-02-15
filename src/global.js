@@ -1,5 +1,5 @@
 import { Modal, message } from 'antd';
-import { formatMessage } from 'umi-plugin-react/locale';
+import { getIntl } from './utils/utils';
 
 // Notify user if offline now
 window.addEventListener('sw.offline', () => {
@@ -9,9 +9,9 @@ window.addEventListener('sw.offline', () => {
 // Pop up a prompt on the page asking the user if they want to use the latest version
 window.addEventListener('sw.updated', e => {
   Modal.confirm({
-    title: formatMessage({ id: 'app.pwa.serviceworker.updated' }),
-    content: formatMessage({ id: 'app.pwa.serviceworker.updated.hint' }),
-    okText: formatMessage({ id: 'app.pwa.serviceworker.updated.ok' }),
+    title: getIntl().formatMessage({ id: 'app.pwa.serviceworker.updated' }),
+    content: getIntl().formatMessage({ id: 'app.pwa.serviceworker.updated.hint' }),
+    okText: getIntl().formatMessage({ id: 'app.pwa.serviceworker.updated.ok' }),
     onOk: async () => {
       // Check if there is sw whose state is waiting in ServiceWorkerRegistration
       // https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration

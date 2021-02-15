@@ -1,9 +1,8 @@
 import React, { PureComponent } from 'react';
-import { formatMessage } from 'umi-plugin-react/locale';
 import { Layout, message } from 'antd';
 import Animate from 'rc-animate';
 import { connect } from 'dva';
-import router from 'umi/router';
+import { history } from 'umi';
 import GlobalHeader from '@/components/GlobalHeader';
 import TopNavHeader from '@/components/TopNavHeader';
 import styles from './Header.less';
@@ -42,11 +41,7 @@ class HeaderView extends PureComponent {
   };
 
   handleNoticeClear = type => {
-    message.success(
-      `${formatMessage({ id: 'component.noticeIcon.cleared' })} ${formatMessage({
-        id: `component.globalHeader.${type}`,
-      })}`
-    );
+    message.success('提示已清理');
     const { dispatch } = this.props;
     dispatch({
       type: 'global/clearNotices',
@@ -57,15 +52,15 @@ class HeaderView extends PureComponent {
   handleMenuClick = ({ key }) => {
     const { dispatch } = this.props;
     if (key === 'userCenter') {
-      router.push('/account/profile');
+      history.push('/account/profile');
       return;
     }
     if (key === 'triggerError') {
-      router.push('/exception/trigger');
+      history.push('/exception/trigger');
       return;
     }
     if (key === 'userinfo') {
-      router.push('/account/settings/base');
+      history.push('/account/settings/base');
       return;
     }
     if (key === 'logout') {
@@ -134,14 +129,14 @@ class HeaderView extends PureComponent {
             {...this.props}
           />
         ) : (
-          <GlobalHeader
-            onCollapse={handleMenuCollapse}
-            onNoticeClear={this.handleNoticeClear}
-            onMenuClick={this.handleMenuClick}
-            onNoticeVisibleChange={this.handleNoticeVisibleChange}
-            {...this.props}
-          />
-        )}
+            <GlobalHeader
+              onCollapse={handleMenuCollapse}
+              onNoticeClear={this.handleNoticeClear}
+              onMenuClick={this.handleMenuClick}
+              onNoticeVisibleChange={this.handleNoticeVisibleChange}
+              {...this.props}
+            />
+          )}
       </Header>
     ) : null;
     return (

@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
-import { Menu, Icon } from 'antd';
-import Link from 'umi/link';
+import { Menu } from 'antd';
+import { Link } from 'umi';
 import isEqual from 'lodash/isEqual';
 import memoizeOne from 'memoize-one';
 import { urlToList } from '../_utils/pathTools';
@@ -19,7 +19,8 @@ const getIcon = icon => {
     return <img src={icon} alt="icon" className={styles.icon} />;
   }
   if (typeof icon === 'string') {
-    return <Icon type={icon} />;
+    //return <LegacyIcon type={icon} />;
+    return <></>
   }
   return icon;
 };
@@ -66,8 +67,8 @@ export default class BaseMenu extends PureComponent {
                 <span>{name}</span>
               </span>
             ) : (
-              name
-            )
+                name
+              )
           }
           key={item.path}
         >
@@ -106,8 +107,8 @@ export default class BaseMenu extends PureComponent {
         onClick={
           isMobile
             ? () => {
-                onCollapse(true);
-              }
+              onCollapse(true);
+            }
             : undefined
         }
       >

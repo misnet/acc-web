@@ -1,18 +1,19 @@
 import React, { Fragment } from 'react';
-import { Link, Redirect, Switch, Route } from 'dva/router';
+import { Link } from 'umi';
 import DocumentTitle from 'react-document-title';
-import { Icon, Row, Col } from 'antd';
+import { CopyrightOutlined } from '@ant-design/icons';
+import { Row, Col } from 'antd';
 import classNames from 'classnames';
 import GlobalFooter from '@/components/GlobalFooter';
 import styles from './UserLayout.less';
 import logo from '@/assets/logo.svg';
 import config from '../config';
-import {getRandNumber} from '../utils/utils';
+import { getRandNumber } from '../utils/utils';
 const links = [];
 
 const copyright = (
   <Fragment>
-    Copyright <Icon type="copyright" /> 2018 Donny 出品
+    Copyright <CopyrightOutlined /> 2018 Donny 出品
   </Fragment>
 );
 
@@ -26,11 +27,11 @@ class UserLayout extends React.PureComponent {
     }
     return title;
   }
-  getBackgroundImageIndex(){
+  getBackgroundImageIndex() {
     let bgIndex = window.sessionStorage.getItem('bgindex');
-    if(!bgIndex){
-      bgIndex = getRandNumber(1,7);
-      window.sessionStorage.setItem('bgindex',bgIndex);
+    if (!bgIndex) {
+      bgIndex = getRandNumber(1, 7);
+      window.sessionStorage.setItem('bgindex', bgIndex);
     }
     return bgIndex;
   }
@@ -41,7 +42,7 @@ class UserLayout extends React.PureComponent {
       <DocumentTitle title={config.SYS_NAME}>
         <div className={styles.container}>
           <div className={styles.content}>
-            <div className={classNames(styles.loginColumn,styles.loginForm)}>
+            <div className={classNames(styles.loginColumn, styles.loginForm)}>
               <div className={styles.top}>
                 <div className={styles.header}>
                   <Link to="/">
@@ -53,7 +54,7 @@ class UserLayout extends React.PureComponent {
               {this.props.children}
               <GlobalFooter className={styles.footer} links={links} copyright={copyright} />
             </div>
-            <div className={classNames(styles.loginColumn,styles.loginBg,styles['bg'+bgIndex])}></div>
+            <div className={classNames(styles.loginColumn, styles.loginBg, styles['bg' + bgIndex])}></div>
           </div>
         </div>
       </DocumentTitle>

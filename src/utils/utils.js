@@ -1,14 +1,17 @@
 import imageNotAvailable from "@/assets/image_not_available.png";
 import _ from "lodash";
+import { createIntl, createIntlCache, getLocale } from 'umi';
+import zhCN from '../locales/zh-CN';
+import enUS from '../locales/en-US';
 /**
  * 对json对象按key进行排序，需要lodash程序支持
  */
 export function sortKeysBy(obj, comparator) {
-    let keys = _.sortBy(_.keys(obj), function(key) {
+    let keys = _.sortBy(_.keys(obj), function (key) {
         return comparator ? comparator(obj[key], key) : key;
     });
     let newObj = {};
-    _.map(keys, function(key) {
+    _.map(keys, function (key) {
         newObj[key] = obj[key];
     });
     return newObj;
@@ -85,7 +88,7 @@ export function ossUpload(option = {}) {
 }
 export function generateUUID() {
     var d = new Date().getTime();
-    var uuid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(
+    var uuid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (
         c
     ) {
         var r = (d + Math.random() * 16) % 16 | 0;
@@ -137,7 +140,7 @@ export function parseURL(url) {
         host: a.hostname,
         port: a.port,
         query: a.search,
-        params: (function() {
+        params: (function () {
             var ret = {},
                 seg = a.search.replace(/^\?/, "").split("&"),
                 len = seg.length,
@@ -293,25 +296,25 @@ export function getRandNumber(minNum = 1, maxNum = 10) {
  * 从param中读取信息，检查sessionStorage，param有就以param的为主，否则从sessionStorage读取
  * @param {*} param 
  */
-export function getCachedApp(param){
-    if(param!=undefined && param.appName!=undefined && param.appId!=undefined){
+export function getCachedApp(param) {
+    if (param != undefined && param.appName != undefined && param.appId != undefined) {
         const app = {
-            id:param.appId,
-            name:param.appName
+            id: param.appId,
+            name: param.appName
         };
-        sessionStorage.setItem('CURRENT_APP',JSON.stringify(app));
+        sessionStorage.setItem('CURRENT_APP', JSON.stringify(app));
         return app;
-    }else{    
-        
+    } else {
+
         const currentApp = sessionStorage.getItem('CURRENT_APP');
-        try{
+        try {
             const cachedApp = JSON.parse(currentApp);
-            if(cachedApp.id && cachedApp.name){
+            if (cachedApp.id && cachedApp.name) {
                 return cachedApp;
-            }else{
+            } else {
                 return null;
             }
-        }catch(e){
+        } catch (e) {
             return null;
         }
     }
@@ -320,39 +323,63 @@ export function getCachedApp(param){
 /**
  * 
  */
-export function getGlobalSetting(key){
+export function getGlobalSetting(key) {
     const settingString = localStorage.getItem('setting');
     let setting = {};
-    try{
+    try {
         setting = JSON.parse(settingString);
-    }catch{
+    } catch {
     }
-    if(!setting){
+    if (!setting) {
         setting = {
-            pageSize:10
+            pageSize: 10
         }
     }
-    if(setting[key]){
+    if (setting[key]) {
         return setting[key]
-    }else{
+    } else {
         return null;
     }
 };
-export function setGlobalSetting(payload){
+export function setGlobalSetting(payload) {
     const settingString = localStorage.getItem('setting');
     let setting = {};
-    try{
+    try {
         setting = JSON.parse(settingString);
-    }catch{
+    } catch {
     }
-    if(!setting){
+    if (!setting) {
         setting = {
-            pageSize:10
+            pageSize: 10
         }
     }
     const newData = {
         ...setting,
         ...payload
     };
-    localStorage.setItem('setting',JSON.stringify(newData));
+    localStorage.setItem('setting', JSON.stringify(newData));
+}
+/**
+ * 获取intl对象
+ */
+export function getIntl() {
+    const cache = createIntlCache();
+    let messages = {};
+    const lang = getLocale();
+    switch (lang) {
+        case 'en-US':
+            messages = enUS;
+            break;
+        case 'zh-CN':
+        default:
+            messages = zhCN;
+    }
+    const intl = createIntl(
+        {
+            locale: getLocale(),
+            messages: messages,
+        },
+        cache,
+    );
+    return intl;
 }

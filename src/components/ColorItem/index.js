@@ -2,7 +2,7 @@
  * 颜色圆块
  */
 import { PureComponent } from "react";
-import {Icon} from 'antd';
+import { CheckOutlined } from '@ant-design/icons';
 import className from 'classnames';
 import styles from './index.less';
 
@@ -48,9 +48,9 @@ class ColorItem extends PureComponent{
                     }
                     return this.createColor(v2,index);
                 })}
-                {this.props.selected?<Icon type="check"/>:null}
+                {this.props.selected?<CheckOutlined />:null}
             </div>
-        )
+        );
     }
 }
 export default ColorItem;

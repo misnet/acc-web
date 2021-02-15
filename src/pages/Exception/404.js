@@ -1,14 +1,13 @@
 import React from 'react';
-import { formatMessage } from 'umi-plugin-react/locale';
-import Link from 'umi/link';
+import { Link } from 'umi';
 import Exception from '@/components/Exception';
 
 const Exception404 = () => (
   <Exception
     type="404"
-    desc={formatMessage({ id: 'app.exception.description.404' })}
+    desc={'404错误'}
     linkElement={Link}
-    backText={formatMessage({ id: 'app.exception.back' })}
+    backText={'返回'}
   />
 );
 

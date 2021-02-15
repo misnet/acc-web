@@ -1,7 +1,8 @@
 
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Row, Col, Card, Icon,List, Avatar,Button } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
+import { Row, Col, Card, List, Avatar, Button } from 'antd';
 
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import { ChartCard, yuan, Field } from 'ant-design-pro/lib/Charts';
@@ -128,7 +129,7 @@ class Workplace extends PureComponent {
           <Card.Grid className={styles.gridStyle}><a href={"/sys/menulist?appId="+item.id+"&appName="+item.name}>菜单管理</a></Card.Grid>
           <Card.Grid className={styles.gridStyle}>配置管理</Card.Grid>
         </Card></List.Item>):(<List.Item >
-          <Button type="dashed" className={styles.newButton} onClick={this.onCreateApp}><Icon type="plus"></Icon>新增应用</Button>
+          <Button type="dashed" className={styles.newButton} onClick={this.onCreateApp}><PlusOutlined></PlusOutlined>新增应用</Button>
         </List.Item>)}>
         </List>
         {modalVisible && <AppModal {...ModalProps} />}

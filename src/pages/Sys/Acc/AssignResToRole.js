@@ -3,70 +3,84 @@
  * @author Donny
  *
  */
-import React, { PureComponent } from 'react';
-import { connect } from 'dva';
-import { Card, Form, Checkbox, Table, Button,Affix,Divider,Radio } from 'antd';
-import { routerRedux } from 'dva/router';
-import { indexOf, without,findIndex,remove } from 'lodash';
-import { formatMessage } from 'umi-plugin-react/locale';
+import React, { useEffect, useState } from 'react';
+import { ArrowLeftOutlined, CheckOutlined } from '@ant-design/icons';
+
+import { Card, Checkbox, Form, Table, Button, Affix, Divider, Radio } from 'antd';
+import { history, useDispatch, useSelector } from 'umi';
+import { indexOf, without, findIndex, remove } from 'lodash';
 import PageHeaderWrapper from '../../../components/PageHeaderWrapper';
 import styles from '../../common.less';
-import {getCachedApp} from '@/utils/utils';
-@connect(({ app,operations, loading }) => ({
-    app,
-    operations,
-    loading: loading.effects['operations/list'],
-    saveLoading: loading.effects['operations/assign'],
-}))
-@Form.create()
-class AssignResToRole extends PureComponent {
-    state = {
+import { getCachedApp } from '@/utils/utils';
+
+export default (props) => {
+    const { app, operations } = useSelector(state => state);
+    const loadingEffect = useSelector(state => state.loading);
+    const loading = loadingEffect.effects['operations/list'];
+    const saveLoading = loadingEffect.effects['operations/assign'];
+    const [state, setState] = useState({
         checkAll: 2,
-        selectedRowKeys: [], 
-    };
-    onSelect = (e,code) => {
-        console.log('e',e);
-        const { operations: { data },dispatch } = this.props;
-        let newOps = [...data.op];
-        const index = findIndex(newOps,item=>item.code==code);
-        if(index>-1){
+        selectedRowKeys: [],
+    });
+    const [form] = Form.useForm();
+    const dispatch = useDispatch();
+    const onSelect = (e, code) => {
+        let newOps = [...operations.data.op];
+        const index = findIndex(newOps, item => item.code == code);
+        if (index > -1) {
             newOps[index]['allow'] = e.target.value;
-            console.log('newOps[index]',index,code,newOps[index]);
-            console.log('newOps',newOps);
+            console.log('newOps[index]', index, code, newOps[index]);
+            console.log('newOps', newOps);
             dispatch({
-                type:'operations/save',
-                payload:{
-                    ...data,
-                    op:newOps
+                type: 'operations/save',
+                payload: {
+                    ...operations.data,
+                    op: newOps
                 }
             })
         }
     };
-    onSelectAll = (e) => {
-        const { operations: { data },dispatch } = this.props;
+    const onSelectAll = (e) => {
+        const data = operations.data;
         let newData = [];
-        if (e.target.value===1) {
-            newData = data.op.map(record => ({
-                ...record,
-                allow:1
-            }));
-        } else if(e.target.value===0) {
-            newData = data.op.map(record => ({
-                ...record,
-                allow:0
-            }));
-        }else{
-            newData = data.op.map(record => ({
-                ...record,
-                allow:-1
-            }));
-            console.log('newData',newData);
+        if (e.target.value === 1) {
+            newData = data.op.map(record => {
+                form.setFieldsValue({
+                    ['assign_' + record.code]: 1
+                });
+                return {
+                    ...record,
+                    allow: 1
+                }
+            });
+        } else if (e.target.value === 0) {
+            newData = data.op.map(record => {
+                form.setFieldsValue({
+                    ['assign_' + record.code]: 0
+                });
+                return {
+                    ...record,
+                    allow: 0
+                }
+            });
+
+
+        } else {
+            newData = data.op.map(record => {
+                form.setFieldsValue({
+                    ['assign_' + record.code]: -1
+                });
+                return {
+                    ...record,
+                    allow: -1
+                }
+            });
         }
         dispatch({
-            type:'operations/save',
-            payload:{
+            type: 'operations/save',
+            payload: {
                 ...data,
-                op:newData
+                op: newData
             }
         })
         // console.log('selectedRowKeys',selectedRowKeys);
@@ -75,145 +89,129 @@ class AssignResToRole extends PureComponent {
         //     selectedRowKeys,
         // });
     };
-    onSave = () => {
-        const { 
-            dispatch, 
-            match: { params },
-            operations:{data},
-            app:{currentApp}
-         } = this.props;
+    const onSave = () => {
+        const { params } = props.match;
+        const { data } = operations;
+        const { currentApp } = app;
         dispatch({
             type: 'operations/assign',
-            payload: { 
-                appId:currentApp.id,
-                rid: params.rid, 
+            payload: {
+                appId: currentApp.id,
+                rid: params.rid,
                 opcodes: data.op,
-                res:params.rcode
+                res: params.rcode
             },
         });
     };
-    componentDidMount() {
-        const { dispatch, match: { params }} = this.props;
-        if(!params.rcode || !params.rid){
-            routerRedux.push('/exception/404');
+    useEffect(() => {
+        const { params } = props.match;
+        if (!params.rcode || !params.rid) {
+            history.push('/exception/404');
             return;
         }
 
 
         const currentApp = getCachedApp();
         if (!currentApp) {
-            routerRedux.push("/exception/404");
+            history.push("/exception/404");
             return;
         }
         dispatch({
-            type:'app/setCurrentApp',
-            payload:currentApp
+            type: 'app/setCurrentApp',
+            payload: currentApp
         });
 
         dispatch({
             type: 'operations/list',
-            payload: { appId:currentApp.id,rid: params.rid, res: params.rcode },
+            payload: { appId: currentApp.id, rid: params.rid, res: params.rcode },
         });
-    }
+    }, []);
 
-    render() {
-        const {
-            operations: { data },
-            loading,
-            saveLoading,
-            match: { params },
-            dispatch,
-            form:{getFieldDecorator}
-        } = this.props;
-        const { selectedRowKeys,checkAll } = this.state;
-        // 表列定义
-        const columns = [
-            {
-                title: '操作名称',
-                key: 'text',
-                dataIndex: 'text',
-            },
-            {
-                title: '操作代码',
-                key: 'code',
-                dataIndex: 'code',
-            },
-            {
-                title: '当前权限结果',
-                key: 'allow',
-                dataIndex: 'allow',
-                render: (text, record) => <span>{record.allow == 1 ? '允许' : (record.allow == 0)?'禁止':'不设置'}</span>,
-            },
-            {
-                title: (
-                    //console.log('record.code',selectedRowKeys,record.code,indexOf(selectedRowKeys, record.code));
-                    getFieldDecorator('all',{
-                        initialValue:checkAll
-                    })(
-                        <Radio.Group
-                            buttonStyle="solid"
-                            size="small"
-                            onChange={this.onSelectAll} 
-                        >
-                            <Radio.Button value={1}>允许</Radio.Button>
-                            <Radio.Button value={0}>禁止</Radio.Button>
-                            <Radio.Button value={-1}>不设置</Radio.Button>
-                        </Radio.Group>
-                    )
-                ),
-                key: 'assign',
-                dataIndex: 'assign',
-                render: (text, record) => {
-                    //console.log('record.code',selectedRowKeys,record.code,indexOf(selectedRowKeys, record.code));
-                    return getFieldDecorator('assign_'+record.code,{
-                        initialValue:record.allow
-                    })(
-                        <Radio.Group
-                            size="small"
-                            buttonStyle="solid"
-                            onChange={(e)=>this.onSelect(e,record.code)} 
-                        >
-                            <Radio.Button value={1}>允许</Radio.Button>
-                            <Radio.Button value={0}>禁止</Radio.Button>
-                            <Radio.Button value={-1}>不设置</Radio.Button>
-                        </Radio.Group>
-                    )
-                }
-            },
-        ];
-        const returnBack = () => {
-            dispatch(routerRedux.push(`/sys/rolelist/role-res/${params.rid}`));
-        };
-        return (
-            <PageHeaderWrapper title="权限资源分配">
-                <Card bordered={false}>
-                    <Affix offsetTop={64} className={styles.navToolbarAffix}>
-                        <div className={styles.navToolbar}>
-                        
-                        <Button icon="arrow-left" onClick={returnBack}>
+    const { data } = operations;
+    const { params } = props.match;
+    const { selectedRowKeys, checkAll } = state;
+    // 表列定义
+    const columns = [
+        {
+            title: '操作名称',
+            key: 'text',
+            dataIndex: 'text',
+        },
+        {
+            title: '操作代码',
+            key: 'code',
+            dataIndex: 'code',
+        },
+        {
+            title: '当前权限结果',
+            key: 'allow',
+            dataIndex: 'allow',
+            render: (text, record) => <span>{record.allow == 1 ? '允许' : (record.allow == 0) ? '禁止' : '不设置'}</span>,
+        },
+        {
+            title: (
+                <Form.Item name='all' initialValue={checkAll}>
+                    <Radio.Group
+                        buttonStyle="solid"
+                        size="small"
+                        onChange={onSelectAll}
+                    >
+                        <Radio.Button value={1}>允许</Radio.Button>
+                        <Radio.Button value={0}>禁止</Radio.Button>
+                        <Radio.Button value={-1}>不设置</Radio.Button>
+                    </Radio.Group>
+                </Form.Item>
+            ),
+            key: 'assign',
+            dataIndex: 'assign',
+            render: (text, record) => {
+                return <Form.Item name={'assign_' + record.code} initialValue={record.allow}>
+                    <Radio.Group
+                        size="small"
+                        buttonStyle="solid"
+                        onChange={(e) => onSelect(e, record.code)}
+                    >
+                        <Radio.Button value={1}>允许</Radio.Button>
+                        <Radio.Button value={0}>禁止</Radio.Button>
+                        <Radio.Button value={-1}>不设置</Radio.Button>
+                    </Radio.Group>
+                </Form.Item>
+
+            }
+        },
+    ];
+    const returnBack = () => {
+        history.push(`/sys/rolelist/role-res/${params.rid}`);
+    };
+    return (
+        <PageHeaderWrapper title="权限资源分配">
+            <Card bordered={false}>
+                <Affix offsetTop={64} className={styles.navToolbarAffix}>
+                    <div className={styles.navToolbar}>
+
+                        <Button icon={<ArrowLeftOutlined />} onClick={returnBack}>
                             返回
                         </Button>
                         <Button
-                            icon="check"
+                            icon={<CheckOutlined />}
                             type="primary"
                             loading={saveLoading}
-                            onClick={this.onSave}
+                            onClick={onSave}
                         >
                             保存
                         </Button>
                         <Divider />
-                        </div>
-                    </Affix>
+                    </div>
+                </Affix>
+                <Form form={form}>
                     <Table
                         rowKey={record => record.code}
                         loading={loading}
                         dataSource={data.op}
                         columns={columns}
                         pagination={false}
-                    />
-                </Card>
-            </PageHeaderWrapper>
-        );
-    }
+                    /></Form>
+            </Card>
+        </PageHeaderWrapper>
+    );
 }
-export default AssignResToRole;
