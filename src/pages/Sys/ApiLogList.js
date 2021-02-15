@@ -100,7 +100,7 @@ export default (props) => {
                     };
                     address = region.join(' ');
                     sessionStorage.setItem(key, address);
-                    this.setState({
+                    setState({
                         ipDetail: address
                     });
                 }
@@ -172,17 +172,17 @@ export default (props) => {
             title: 'IP',
             dataIndex: 'ip',
             key: 'ip',
-            render: (text, record) => <Popover content={this.showIpDetail(record.ip)} trigger="click" onClick={() => this.onShowIp(record.ip)}><a>{record.ip}</a></Popover>
+            render: (text, record) => <Popover content={showIpDetail(record.ip)} trigger="click" onClick={() => onShowIp(record.ip)}><a>{record.ip}</a></Popover>
         }, {
             title: '参数',
             dataIndex: 'params',
             key: 'params',
-            render: (text, record) => <a onClick={() => this.onShowJSON('参数', record.params)}>查看</a>
+            render: (text, record) => <a onClick={() => onShowJSON('参数', record.params)}>查看</a>
         }, {
             title: '响应',
             dataIndex: 'result',
             key: 'result',
-            render: (text, record) => { return record.result ? <a onClick={() => this.onShowJSON('响应结果', record.result)}>查看</a> : '无' }
+            render: (text, record) => { return record.result ? <a onClick={() => onShowJSON('响应结果', record.result)}>查看</a> : '无' }
         }]
 
 
