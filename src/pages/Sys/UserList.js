@@ -117,6 +117,9 @@ export default (props) => {
         dispatch({
             type: `user/${user.modalType}`,
             payload: values,
+            callback: result => {
+                result && fetchUserList();
+            }
         })
     }
 
@@ -148,6 +151,10 @@ export default (props) => {
             dataIndex: 'uid',
             key: 'uid',
         }, {
+            title: '姓名',
+            dataIndex: 'fullname',
+            key: 'fullname',
+        }, {
             title: '用户名',
             dataIndex: 'username',
             key: 'username',
@@ -167,6 +174,10 @@ export default (props) => {
                 {record.mobileVerified ? <MobileOutlined /> : null}
                 {record.emailVerified ? <MailOutlined /> : null}
             </>
+        }, {
+            title: '备注',
+            dataIndex: 'memo',
+            key: 'memo',
         }, {
             title: '操作',
             dataIndex: 'action',

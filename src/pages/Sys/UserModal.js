@@ -70,6 +70,21 @@ export default ({ editUser = {},
                 <FormItem
                     labelCol={{ span: 5 }}
                     wrapperCol={{ span: 15 }}
+                    label="姓名"
+                    name='fullname'
+                    initialValue={editUser.fullname}
+                    rules={[
+                        {
+                            required: false,
+                            message: "请输入姓名"
+                        }
+                    ]}
+                >
+                    <Input placeholder="请输入" maxLength={50} />
+                </FormItem>
+                <FormItem
+                    labelCol={{ span: 5 }}
+                    wrapperCol={{ span: 15 }}
                     label="手机号"
                     initialValue={editUser.mobile}
                     name='mobile'
@@ -104,7 +119,15 @@ export default ({ editUser = {},
                 >
                     <Input placeholder="请输入" maxLength={50} />
                 </FormItem>
-
+                <FormItem
+                    labelCol={{ span: 5 }}
+                    wrapperCol={{ span: 15 }}
+                    label="备注"
+                    name='memo'
+                    initialValue={editUser.memo}
+                >
+                    <Input placeholder="请输入" maxLength={50} />
+                </FormItem>
                 <Row>
                     <Col span={5}>
                         <FormItem labelCol={{ span: 23 }} label="验证" />

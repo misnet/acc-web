@@ -26,21 +26,20 @@ export default {
             }
         },
         //创建
-        * create({ payload }, { call, put, select }) {
+        * create({ payload, callback }, { call, put, select }) {
             const response = yield call(createUser, payload);
             if (response.status == 0) {
                 yield put({
                     type: 'hideModal',
                 });
-
                 //提交成功
-                yield put({
-                    type: 'userList'
-                });
+                if (typeof callback === 'function') {
+                    callback(true);
+                }
             }
         },
         //修改
-        * update({ payload }, { select, call, put }) {
+        * update({ payload, callback }, { select, call, put }) {
             const uid = yield select(({ user }) => user.editUser.uid);
             const userItem = { ...payload, uid };
             const response = yield call(updateUser, userItem);
@@ -49,10 +48,9 @@ export default {
                     type: 'hideModal',
                 });
                 //提交成功
-
-                yield put({
-                    type: 'userList'
-                });
+                if (typeof callback === 'function') {
+                    callback(true);
+                }
             }
         },
         //列表
