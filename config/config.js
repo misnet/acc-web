@@ -21,6 +21,7 @@ export default defineConfig({
     define: {
         APP_VERSION: packageJson.version,
     },
+    hash: true,
     // antd: {
     //     compact: true, // 开启紧凑主题
     // },
