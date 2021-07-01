@@ -1,4 +1,4 @@
-FROM registry.cn-shenzhen.aliyuncs.com/depoga_public/node:10.17.0
+FROM registry.cn-shenzhen.aliyuncs.com/depoga_public/node:14.17.0-alpine3.13
 WORKDIR /data
 ARG ACC_ENV
 COPY . .
