@@ -1,22 +1,22 @@
 import { isUrl } from '../utils/utils';
-
+import { DashboardOutlined, UserOutlined, DatabaseOutlined } from '@ant-design/icons';
 const menuData = [
   {
     name: '全部应用',
-    icon: 'dashboard',
+    icon: <DashboardOutlined />,
     path: 'dashboard/workplace'
   },
   {
     name: '全部用户',
-    icon: 'user',
+    icon: <UserOutlined />,
     path: 'sys/all-userlist',
-    
+
   },
   {
     name: 'API访问',
-    icon: 'database',
+    icon: <DatabaseOutlined />,
     path: 'sys/apilog-list',
-    
+
   },
 ];
 
@@ -45,26 +45,26 @@ function formatter(data, parentPath = '/', parentAuthority) {
  * @param menuData
  * @returns {Array}
  */
-function filterMenu(serverMenuData,menuData){
+function filterMenu(serverMenuData, menuData) {
   let newData = [];
-  if(!serverMenuData){
+  if (!serverMenuData) {
     return newData;
   }
-  menuData.map(item=>{
-    if(item.children){
-      let children = filterMenu(serverMenuData,item.children)
-      if(Array.isArray(children) && children.length>0){
-        newData.push(Object.assign({},item,{children}));
+  menuData.map(item => {
+    if (item.children) {
+      let children = filterMenu(serverMenuData, item.children)
+      if (Array.isArray(children) && children.length > 0) {
+        newData.push(Object.assign({}, item, { children }));
       }
-    }else if(serverMenuData.some(smenu=>smenu.url==item.path)){
-      newData.push(Object.assign({},item));
-    }else if(item.authority === 'common'){
+    } else if (serverMenuData.some(smenu => smenu.url == item.path)) {
+      newData.push(Object.assign({}, item));
+    } else if (item.authority === 'common') {
       newData.push(item);
     }
   });
   return newData;
 }
-export const getMenuData = (serverMenuData=[]) => {
+export const getMenuData = (serverMenuData = []) => {
   //暂取消通过服务端来过滤菜单，直接从本地读
   //return filterMenu(serverMenuData, formatter(menuData))
   return formatter(menuData);

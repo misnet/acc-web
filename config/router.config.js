@@ -1,5 +1,8 @@
 export default [
     {
+        path: "/user/oauth", component: "./User/Oauth"
+    },
+    {
         path: "/user",
         component: "../layouts/UserLayout",
         routes: [

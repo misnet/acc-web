@@ -1,6 +1,6 @@
 import { history } from 'umi';
 import { reloadAuthorized } from '../utils/Authorized';
-import { userLogin, refreshAccessToken } from '../services/user';
+import { userLogin, userLoginByCode, refreshAccessToken } from '../services/user';
 import {
     setAuthority,
     hasAuthority,
@@ -53,6 +53,34 @@ export default {
                 //yield put(routerRedux.push('/'));
             }
         },
+        *loginByCode({ payload }, { call, put }) {
+            let response = { data: {} };
+            response = yield call(userLoginByCode, payload);
+            let data = {};
+            if (typeof response['data']['uid'] != 'undefined') {
+                data = response['data'];
+                data.loginStatus = 'ok';
+                data.type = payload.type;
+            } else {
+                data = {
+                    type: payload.type,
+                    uid: 0,
+                    username: '',
+                    menuList: [],
+                    accessToken: '',
+                    loginStatus: 'error',
+                };
+            }
+            //缓存accessToken等
+            yield put({
+                type: 'changeLoginStatus',
+                payload: data,
+            });
+            if (data.uid) {
+                //reloadAuthorized();
+                history.push('/');
+            }
+        },
         *login({ payload }, { call, put }) {
 
             let response = { data: {} };
@@ -80,7 +108,7 @@ export default {
                 payload: data,
             });
             if (data.uid) {
-                reloadAuthorized();
+                //reloadAuthorized();
                 history.push('/');
             }
         },
@@ -101,7 +129,7 @@ export default {
                         currentAuthority: 'guest',
                     },
                 });
-                reloadAuthorized();
+                //reloadAuthorized();
                 history.push('/user/login');
             }
         },

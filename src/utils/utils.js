@@ -383,3 +383,78 @@ export function getIntl() {
     );
     return intl;
 }
+export function clearCacheData(prefix, isLocalStorage = true) {
+    const storage = isLocalStorage ? localStorage : sessionStorage;
+    for (let i = 0; i < storage.length; i++) {
+        const key = storage.key(i);
+        if (key === prefix) {
+            storage.removeItem(key);
+        } else if (/^prefix/.test(key)) {
+            storage.removeItem(key);
+        }
+    }
+}
+/**
+ * 获取设定
+ */
+export function getCacheData(key, isLocalStorage = true) {
+    const storage = isLocalStorage ? localStorage : sessionStorage;
+    const settingString = storage.getItem(key);
+    let setting = null;
+    try {
+        const now = parseInt(new Date().getTime() / 1000); //eslint-disable-line no-magic-numbers
+        setting = JSON.parse(settingString);
+        if (!setting || !setting.expired || setting.expired < now) {
+            setting = null;
+        } else if (setting.type) {
+
+            switch (setting.type) {
+                case 'boolean':
+                case 'object':
+                case 'number':
+                case 'string':
+                default:
+                    return setting.content;
+            }
+        }
+    } catch { }
+    return null;
+}
+/**
+ * 保存全局设定
+ * @param {} payload
+ */
+export function setCacheData(key, value, config = {}) {
+    const defaultConfig = {
+        isLocalStorage: true,
+        lifetime: 1200
+    }
+    const option = Object.assign({}, defaultConfig, config);
+    console.log('option', option);
+    const storage = option.isLocalStorage ? localStorage : sessionStorage;
+    if (value === null) {
+        storage.removeItem(key);
+        return;
+    }
+    const now = parseInt(new Date().getTime() / 1000); //eslint-disable-line no-magic-numbers
+    const data = {
+        content: '',
+        type: 'string',
+        expired: now + option.lifetime
+    };
+
+    if (typeof value === 'string') {
+        data.content = value;
+        data.type = 'string';
+    } else if (typeof value === 'object') {
+        data.content = value;
+        data.type = 'object';
+    } else if (typeof value === 'number') {
+        data.type = 'number';
+        data.content = value;
+    } else if (typeof value === 'boolean') {
+        data.type = 'boolean';
+        data.content = value;
+    }
+    storage.setItem(key, JSON.stringify(data));
+}

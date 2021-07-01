@@ -22,9 +22,9 @@ export default defineConfig({
         APP_VERSION: packageJson.version,
     },
     hash: true,
-    // antd: {
-    //     compact: true, // 开启紧凑主题
-    // },
+    antd: {
+        compact: true, // 开启紧凑主题
+    },
     terserOptions: {
         compress: {
             warnings: false,
