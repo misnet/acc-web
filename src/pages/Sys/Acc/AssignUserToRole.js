@@ -86,10 +86,14 @@ export default (props) => {
                 <div className={styles.tableList}>
                     <Spin spinning={loading} size="large">
                         <Transfer
+                            listStyle={{
+                                width: 400,
+                                height: 400
+                            }}
                             titles={['未分配的用户', '已分配的用户']}
                             rowKey={record => record.uid}
                             dataSource={unassigned}
-                            render={record => (record.username ? record.username : '')}
+                            render={record => (record.username ? `${record.username}-${record.fullname}` : '')}
                             targetKeys={chosenList}
                             onChange={onTransferChange}
                         />

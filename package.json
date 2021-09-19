@@ -34,6 +34,7 @@
     "ant-design-pro": "^2.3.1",
     "braft-editor": "^2.2.0",
     "braft-extensions": "^0.0.13",
+    "caniuse-lite": "^1.0.30001258",
     "classnames": "^2.2.6",
     "fabric": "^2.7.0",
     "immutability-helper": "^2.9.0",
