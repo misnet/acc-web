@@ -80,6 +80,7 @@ const page = props => {
         {
             dataKey: 'defaultAllow',
             title: '默认权限',
+            width: 100,
             render: (text, record) => {
                 return record.defaultAllow > 0 ? '允许' : '禁止'
             }
@@ -105,10 +106,11 @@ const page = props => {
         onClose={props.onClose}
         footer={footer}
     >
-        <Alert style={{ margin: "10px 0" }} type="info" message="提示：要添加角色请点左右的角色所在的行" showIcon />
+        <Alert style={{ margin: "10px 0" }} type="info" message="提示：要添加角色请点左边的角色所在的行" showIcon />
         <Row gutter={20}>
             <Col xs={{ span: 12 }}>
                 <Table
+                    bordered
                     rowKey={r => r.id}
                     columns={roleColumns}
                     pagination={false}
@@ -121,6 +123,7 @@ const page = props => {
             </Col>
             <Col xs={{ span: 12 }}>
                 <Table pagination={false}
+                    bordered
                     rowKey={r => r.roleId}
                     columns={userRoleColumns}
                     pagination={false}

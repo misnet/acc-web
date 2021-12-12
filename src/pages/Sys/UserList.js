@@ -245,6 +245,8 @@ export default (props) => {
             title: '操作',
             dataIndex: 'action',
             key: 'action',
+            width: 150,
+            fixed: 'right',
             render: (text, record) => (
                 <span>
                     <a onClick={() => onEditUser(record)}>编辑</a>
@@ -289,7 +291,7 @@ export default (props) => {
 
                     <Table
                         rowKey={record => record.uid}
-
+                        scroll={{ x: 1110 }}
                         loading={loading}
                         dataSource={data.list}
                         columns={columns}
