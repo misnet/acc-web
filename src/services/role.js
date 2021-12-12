@@ -10,30 +10,30 @@ import APILIST from '../apiList';
  * 导入权限资源
  * @param {*} params 
  */
-export async function importResourceXml(params){
-    return request(APILIST.BACKEND.RESOURCE_XML_IMPORT,{
-        method:'POST',
-        body:params
+export async function importResourceXml(params) {
+    return request(APILIST.BACKEND.RESOURCE_XML_IMPORT, {
+        method: 'POST',
+        body: params
     });
 }
 /**
  * 上传XML内容，让服务端分析
  * @param {} params 
  */
-export async function parseResourceXml(params){
-    return request(APILIST.BACKEND.RESOURCE_XML_PARSE,{
-        method:'POST',
-        body:params
+export async function parseResourceXml(params) {
+    return request(APILIST.BACKEND.RESOURCE_XML_PARSE, {
+        method: 'POST',
+        body: params
     })
 }
 /**
  * 将资源操作授权给角色
  * @param {*} params 
  */
-export async function saveOperationsToRole(params){
-    return request (APILIST.BACKEND.SAVE_OPERATIONS_TO_ROLE,{
-        method:'POST',
-        body:params
+export async function saveOperationsToRole(params) {
+    return request(APILIST.BACKEND.SAVE_OPERATIONS_TO_ROLE, {
+        method: 'POST',
+        body: params
     });
 }
 /**
@@ -65,6 +65,17 @@ export async function listResourceGroup(params) {
  */
 export async function assignMenu(params) {
     return request(APILIST.BACKEND.ROLE_ASSIGNMENU, {
+        method: 'POST',
+        body: params,
+    });
+}
+/**
+ * 给指定用户分配多个角色
+ * @param {*} params 
+ * @returns 
+ */
+export async function assignRolesToUser(params) {
+    return request(APILIST.BACKEND.USER_ASSIGN_ROLES, {
         method: 'POST',
         body: params,
     });

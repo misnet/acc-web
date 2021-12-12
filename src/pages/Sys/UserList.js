@@ -7,9 +7,10 @@ import React, { useState, useEffect } from 'react'
 import { history, useSelector, useDispatch, useIntl } from 'umi';
 import { MailOutlined, MobileOutlined, PlusOutlined } from '@ant-design/icons';
 
-import { Table, Card, Popconfirm, Button, Divider, Affix, Form } from 'antd';
+import { Table, Card, Popconfirm, Button, Divider, Affix, Form, Tag, message } from 'antd';
 import PageHeaderWrapper from '../../components/PageHeaderWrapper';
 import UserModal from './UserModal';
+import PrivilegeModal from './PrivilegeModal';
 import styles from '../common.less'
 import { getCachedApp, getGlobalSetting, setGlobalSetting } from '@/utils/utils';
 
@@ -28,8 +29,19 @@ export default (props) => {
     const { query } = props.location;
     const [state, setState] = useState({
         appId: query.appId,
-        appName: query.appName
+        appName: query.appName,
+        roleList: [],
+        userId: 0,
+        privilegeModalVisible: false
     });
+    const updateState = (d => {
+        setState(prevState => {
+            return {
+                ...prevState,
+                ...d
+            }
+        })
+    })
     const dispatch = useDispatch();
     useEffect(() => {
 
@@ -84,6 +96,10 @@ export default (props) => {
             },
         })
     }
+    /**
+     * 获取用户列表
+     * @param {*} page 
+     */
     const fetchUserList = (page = 1) => {
         dispatch({
             type: 'user/userList',
@@ -122,7 +138,47 @@ export default (props) => {
             }
         })
     }
-
+    /**
+     * 授权
+     * @param {*} record 
+     */
+    const onAssignPrivileges = record => {
+        updateState({
+            userId: record.uid,
+            roleList: record.roles,
+            privilegeModalVisible: true
+        })
+    }
+    /**
+     * 更新用户的角色列表
+     * @param {*} rolesList 
+     */
+    const onUpdateUserRoles = rolesList => {
+        const rids = rolesList.map(item => item.roleId);
+        dispatch({
+            type: 'assignUsers/updateUserRoles',
+            payload: {
+                uid: state.userId,
+                appId: state.appId,
+                rids: rids
+            },
+            callback: result => {
+                if (result) {
+                    message.success('用户授权成功');
+                    fetchUserList(user.data.page);
+                    onTogglePrivilegeModal();
+                }
+            }
+        })
+    }
+    /**
+     * 关闭权限弹窗
+     */
+    const onTogglePrivilegeModal = () => {
+        updateState({
+            privilegeModalVisible: !state.privilegeModalVisible
+        })
+    }
     const handleTableChange = (pagination, filtersArg, sorter) => {
         setGlobalSetting({ pageSize: pagination.pageSize });
         fetchUserList(pagination.current);
@@ -167,6 +223,13 @@ export default (props) => {
             dataIndex: 'email',
             key: 'email',
         }, {
+            title: '角色',
+            dataIndex: 'roles',
+            key: 'roles',
+            render: (text, record) => {
+                return record.roles.map(item => <Tag color="cyan" key={item.roleId}>{item.roleName}</Tag>)
+            }
+        }, {
             title: '验证',
             dataIndex: 'mobileEmailVerified',
             key: 'mobileEmailVerified',
@@ -193,6 +256,8 @@ export default (props) => {
                     >
                         <a>删除</a>
                     </Popconfirm>
+                    <Divider type="vertical" />
+                    <a onClick={() => onAssignPrivileges(record)}>权限</a>
                 </span>
             ),
         }]
@@ -232,6 +297,13 @@ export default (props) => {
                         pagination={paginationProps}
                     />
                 </div>
+                <PrivilegeModal
+                    visible={state.privilegeModalVisible}
+                    appId={state.appId}
+                    roleList={state.roleList}
+                    onClose={onTogglePrivilegeModal}
+                    onOk={onUpdateUserRoles}
+                />
             </Card>
             {modalVisible && <UserModal {...ModalProps} />}
         </PageHeaderWrapper>

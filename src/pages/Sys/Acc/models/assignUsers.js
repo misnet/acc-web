@@ -2,7 +2,7 @@
  * 角色分配给用户的业务处理模块
  * @author Donny
  */
-import { listUser, assignUser, unassignUser } from '../../../../services/role';
+import { listUser, assignUser, unassignUser, assignRolesToUser } from '../../../../services/role';
 
 export default {
     namespace: 'assignUsers',
@@ -12,6 +12,19 @@ export default {
     },
 
     effects: {
+        /**
+         * 指定1个用户，分配多个角色
+         * @param {*} param0 
+         * @param {*} param1 
+         */
+        *updateUserRoles({ payload, callback }, { call, put }) {
+            const response = yield call(assignRolesToUser, payload);
+            if (response.status === 0) {
+                if ('function' === typeof callback) {
+                    callback(response.data);
+                }
+            }
+        },
         *unassign({ payload, callback }, { call, put }) {
             yield call(unassignUser, payload);
 

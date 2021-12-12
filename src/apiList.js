@@ -30,6 +30,8 @@ export default {
         USER_UPDATE: 'acc.user.update',
         // 用户删除
         USER_DELETE: 'acc.user.delete',
+        // 给用户指定角色
+        USER_ASSIGN_ROLES: 'acc.user.assignrole',
         // 角色列表
         ROLE_LIST: 'acc.role.list',
         ROLE_UPDATE: 'acc.role.update',

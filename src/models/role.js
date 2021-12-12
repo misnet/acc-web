@@ -8,11 +8,16 @@ export default {
     namespace: 'role',
 
     state: {
-        data: [],
+        data: {
+            list: [],
+            total: 0,
+            page: 1,
+            limit: 10
+        },
         modalVisible: false,
         modalType: 'create',
         editData: {
-            assignPolicy:0
+            assignPolicy: 0
         },
     },
 
@@ -33,7 +38,7 @@ export default {
             }
         },
         //修改
-        *update({ payload }, { select, call, put }) {
+        *update({ payload, callback }, { select, call, put }) {
             const id = yield select(({ role }) => role.editData.id);
             const dataItem = { ...payload, id };
             const response = yield call(update, dataItem);
@@ -49,9 +54,9 @@ export default {
             }
         },
         //列表
-        *list({ payload }, { call, put,select }) {
-            const currentApp = yield select(({app})=>app.currentApp);
-            const response = yield call(list, {appId:currentApp.id,...payload});
+        *list({ payload, callback }, { call, put, select }) {
+            const currentApp = yield select(({ app }) => app.currentApp);
+            const response = yield call(list, { appId: currentApp.id, ...payload });
             let data = {};
             if (typeof response['data'] != 'undefined') {
                 data = response['data'];
@@ -62,6 +67,9 @@ export default {
                 type: 'save',
                 payload: data,
             });
+            if (typeof callback === 'function') {
+                callback(data);
+            }
         },
 
         //删除
