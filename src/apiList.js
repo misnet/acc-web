@@ -7,7 +7,8 @@ export default {
     COMMON: {
         OSSETTING: 'common.osssetting',
         REGION_LIST: 'common.region.list',
-        IP_SEARCH: 'common.ip'
+        IP_SEARCH: 'common.ip',
+        SMS_SEND: 'common.verifycode.send'
     },
     BACKEND: {
         // ACC查询
@@ -32,6 +33,7 @@ export default {
         USER_DELETE: 'acc.user.delete',
         // 给用户指定角色
         USER_ASSIGN_ROLES: 'acc.user.assignrole',
+        USER_BIND_LOGIN: 'acc.user.bind.login',
         // 角色列表
         ROLE_LIST: 'acc.role.list',
         ROLE_UPDATE: 'acc.role.update',

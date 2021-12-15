@@ -1,23 +1,23 @@
 import { queryNotices } from '@/services/api';
-import {queryOssSetting,regionList,ipSearch} from '@/services/common';
+import { queryOssSetting, regionList, ipSearch, sendSms } from '@/services/common';
 /**
  * 给指定路径的地区对象赋值子节点列表
  * @param {*} regionList 地区列表
  * @param {*} pathIndex 要传值的路径，值类似 "350000.350011"
  * @param {*} childrenList 要赋值的子节点列表
  */
-function setChildrenList(regionList,pathIndex,childrenList){
+function setChildrenList(regionList, pathIndex, childrenList) {
     const newPathIndex = [...pathIndex];
-    const currentParentId = newPathIndex.splice(0,1);
-    const restPathIndex   = newPathIndex;
-    for(let i=0;i<regionList.length;i++){
-        if(regionList[i]['value']  ==  currentParentId[0]){
-            if(restPathIndex.length !==0 && regionList[i]['children'] )
-                setChildrenList(regionList[i]['children'],restPathIndex,childrenList)
-            else{
+    const currentParentId = newPathIndex.splice(0, 1);
+    const restPathIndex = newPathIndex;
+    for (let i = 0; i < regionList.length; i++) {
+        if (regionList[i]['value'] == currentParentId[0]) {
+            if (restPathIndex.length !== 0 && regionList[i]['children'])
+                setChildrenList(regionList[i]['children'], restPathIndex, childrenList)
+            else {
                 regionList[i]['children'] = childrenList;
-                regionList[i]['loading']  = false;
-            }break;
+                regionList[i]['loading'] = false;
+            } break;
         }
     }
 }
@@ -27,71 +27,79 @@ export default {
     state: {
         collapsed: false,
         notices: [],
-        ossSetting:{
-            Bucket:{},
-            Credentials:{},
-            RequestId:"",
-            AssumeRoleUser:{}
+        ossSetting: {
+            Bucket: {},
+            Credentials: {},
+            RequestId: "",
+            AssumeRoleUser: {}
         },
-        regionList:[],
-        ipInfo:{}
+        regionList: [],
+        ipInfo: {}
     },
 
     effects: {
-        *fetchRegionList({payload,callback},{call,put,select}){
-            const response = yield call(regionList,payload);
-            if(response.status === 0 ){
+        *fetchRegionList({ payload, callback }, { call, put, select }) {
+            const response = yield call(regionList, payload);
+            if (response.status === 0) {
                 let nodes = response.data;
-                let childList = nodes.map(region=>{
+                let childList = nodes.map(region => {
                     return {
-                        key:'r'+region.id,
-                        label:region.name,
-                        value:region.id,
-                        parentId:region.parentId,
+                        key: 'r' + region.id,
+                        label: region.name,
+                        value: region.id,
+                        parentId: region.parentId,
                         pathIndex: payload.pathIndex + '.' + region.id,
-                        isLeaf:region.childNum === 0,
-                        loading:false
+                        isLeaf: region.childNum === 0,
+                        loading: false
                     };
                 });
-                console.log('childList',childList);
-                let regionList = yield select(({global})=>global.regionList);
-                if(regionList.length>0){
-                    setChildrenList(regionList,payload.pathIndex.split('.').splice(1),childList);
-                }else{
+                console.log('childList', childList);
+                let regionList = yield select(({ global }) => global.regionList);
+                if (regionList.length > 0) {
+                    setChildrenList(regionList, payload.pathIndex.split('.').splice(1), childList);
+                } else {
                     regionList = childList;
                 }
                 yield put({
-                    type:'setRegionList',
-                    payload:{
+                    type: 'setRegionList',
+                    payload: {
                         regionList: regionList
                     }
                 });
-                if(typeof callback === 'function'){
+                if (typeof callback === 'function') {
                     callback(regionList);
                 }
             }
         },
-        *ipSearch({payload,callback},{call,put}){
-            const responseData = yield call(ipSearch,payload);
-            if(responseData.status === 0){
+        *sendSms({ payload, callback }, { call }) {
+            const response = yield call(sendSms, payload);
+            if (response.status === 0) {
+                if (typeof callback == 'function') {
+                    callback(response.data);
+                }
+            }
+        },
+        *ipSearch({ payload, callback }, { call, put }) {
+            const responseData = yield call(ipSearch, payload);
+            if (responseData.status === 0) {
                 yield put({
-                    type:'saveIpInfo',
-                    payload:responseData.data
+                    type: 'saveIpInfo',
+                    payload: responseData.data
                 });
-                if(typeof callback=='function'){
+                if (typeof callback == 'function') {
                     callback(responseData.data);
                 }
             }
         },
-        *fetchOssSetting({payload},{call,put}){
+        *fetchOssSetting({ payload }, { call, put }) {
             const responseData = yield call(queryOssSetting);
-            if(responseData.status === 0){
+            if (responseData.status === 0) {
                 yield put({
-                    type:'saveOssSetting',
-                    payload:responseData.data
+                    type: 'saveOssSetting',
+                    payload: responseData.data
                 });
             }
-            console.log('data',responseData.data);
+            console.log('data', responseData.data);
         },
         *fetchNotices(_, { call, put, select }) {
             const data = yield call(queryNotices);
@@ -152,23 +160,23 @@ export default {
     },
 
     reducers: {
-        saveIpInfo(state,{payload}){
+        saveIpInfo(state, { payload }) {
             return {
                 ...state,
-                ipInfo:payload
+                ipInfo: payload
             }
         },
-        setRegionList(state,{payload}){
+        setRegionList(state, { payload }) {
             return {
                 ...state,
                 regionList: payload.regionList
             }
         },
-        saveOssSetting(state,{payload}){
-          return {
-              ...state,
-              ossSetting:payload
-          }  
+        saveOssSetting(state, { payload }) {
+            return {
+                ...state,
+                ossSetting: payload
+            }
         },
         changeLayoutCollapsed(state, { payload }) {
             return {

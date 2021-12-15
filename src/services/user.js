@@ -122,3 +122,9 @@ export async function changePasswd(params) {
     body: params
   })
 }
+export async function bindLogin(params) {
+  return request(APILIST.BACKEND.USER_BIND_LOGIN, {
+    method: 'POST',
+    body: params
+  })
+}

@@ -31,3 +31,9 @@ export async function ipSearch(params) {
         body: params,
     });
 }
+export async function sendSms(params) {
+    return request(APILIST.COMMON.SMS_SEND, {
+        method: 'POST',
+        body: params,
+    });
+}

@@ -35,7 +35,7 @@ export default () => {
         });
         let state = 'url=' + encodeURIComponent(stateData.url) + '&security_token=' + encodeURIComponent(security_token);
         state += '&appkey=' + stateData.appkey;
-        console.log('state', state);
+        console.log('state', encodeURIComponent(state));
 
         const baseUrl = `${apiConfig.gateway.split('//')[0]}//${apiConfig.gateway.split('//')[1].split('/')[0]}`;
         const oauthUrl = baseUrl + '/oauth/client?client=' + client + '&state=' + encodeURIComponent(state);
@@ -70,6 +70,9 @@ export default () => {
 
                 <Form.Item>
                     <Button size="large" icon={<GooglePlusOutlined />} onClick={() => onConnect('google')} type="default" >Google 登陆</Button>
+                </Form.Item>
+                <Form.Item>
+                    <Button size="large" icon={<GooglePlusOutlined />} onClick={() => onConnect('wechat')} type="default" >微信 登陆</Button>
                 </Form.Item>
             </Form>
         </div>
