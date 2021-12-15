@@ -1,29 +1,45 @@
 import { useEffect } from 'react';
 import { useLocation, useDispatch, useSelector } from 'umi';
 import { generateUUID, setGlobalSetting, getGlobalSetting } from '@/utils/utils';
+import { Modal } from 'antd';
 const Oauth = props => {
     const curLocation = useLocation();
     const dispatch = useDispatch();
     const loginInfo = useSelector(state => state.login);
-    const { url, client, code, security_token } = curLocation.query;
+    const { url, client, code, security_token, avatar, oauthId, name } = curLocation.query;
     useEffect(() => {
 
-        if (!security_token || !client || !code) {
+        if (!security_token || !client) {
             console.log('error request');
             return;
         }
         const savedToken = getGlobalSetting(client + '_' + security_token);
         if (!savedToken || savedToken !== security_token) {
             //token不对
-            console.log('error token')
+            Modal.error({
+                content: '验证失败' + client + '_' + security_token
+            })
         } else {
             //根据code取token
-            dispatch({
-                type: 'login/loginByCode',
-                payload: {
-                    code
+            const bindUrl = '/user/oauth-bind?avatar=' + encodeURIComponent(avatar) + '&client=' + encodeURIComponent(client) + '&name=' + encodeURIComponent(name) + '&oauthId=' + encodeURIComponent(oauthId);
+            console.log(bindUrl);
+            const win = window.opener ? window.opener : window;
+            if (!code) {
+                if (window.opener) {
+                    window.opener.location.href = bindUrl;
+                    window.close();
+                } else {
+                    location.href = bindUrl;
                 }
-            });
+            } else {
+                dispatch({
+                    type: 'login/loginByCode',
+                    payload: {
+                        code
+                    }
+                });
+            }
+
         }
     }, []);
     useEffect(() => {

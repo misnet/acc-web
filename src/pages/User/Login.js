@@ -38,7 +38,7 @@ export default () => {
 
         const security_token = generateUUID();
         const stateData = {
-            url: 'http://localhost:8001/user/oauth?client=' + client + '&url=/',
+            url: window.location.origin + '/user/oauth?client=' + client + '&url=/',
             security_token,
             appkey: apiConfig.appKey
         }

@@ -60,6 +60,7 @@ export default () => {
                 callback: (result) => {
                     console.log('result', result);
                     if (result.uid) {
+                        message.success('绑定成功');
                         history.push('/');
                     } else {
                         message.error('绑定失败');
@@ -196,14 +197,12 @@ export default () => {
                         </Col>
 
                         <Col xs={{ span: 19 }} push={5}>
-
-                            {loginStore.loginStatus === 'error' &&
-                                !submitting &&
-                                renderMessage('账户或密码错误')}
-
                             <Form.Item>
                                 <Button size="large" onClick={handleSubmit} className={styles.submit} type="primary" htmlType="submit">绑定</Button>
                             </Form.Item>
+                        </Col>
+                        <Col xs={{ span: 19 }} push={5}>
+                            <a href="/user/login">使用账户密码登陆</a>
                         </Col>
                     </Row>
                 </div>

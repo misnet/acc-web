@@ -329,6 +329,7 @@ export function getGlobalSetting(key) {
     try {
         setting = JSON.parse(settingString);
     } catch {
+        console.log('parse global setting error');
     }
     if (!setting) {
         setting = {
