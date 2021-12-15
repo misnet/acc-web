@@ -6,7 +6,6 @@ import { Row, Col } from 'antd';
 import classNames from 'classnames';
 import GlobalFooter from '@/components/GlobalFooter';
 import styles from './UserLayout.less';
-import logo from '@/assets/logo.svg';
 import config from '../config';
 import { getRandNumber } from '../utils/utils';
 const links = [];
@@ -16,7 +15,6 @@ const copyright = (
     Copyright <CopyrightOutlined /> 2018 Donny 出品
   </Fragment>
 );
-
 class UserLayout extends React.PureComponent {
   getPageTitle() {
     const { routerData, location } = this.props;
@@ -43,14 +41,6 @@ class UserLayout extends React.PureComponent {
         <div className={styles.container}>
           <div className={styles.content}>
             <div className={classNames(styles.loginColumn, styles.loginForm)}>
-              <div className={styles.top}>
-                <div className={styles.header}>
-                  <Link to="/">
-                    <img alt="logo" className={styles.logo} src={logo} />
-                    <span className={styles.title}>{config.SYS_NAME}</span>
-                  </Link>
-                </div>
-              </div>
               {this.props.children}
               <GlobalFooter className={styles.footer} links={links} copyright={copyright} />
             </div>

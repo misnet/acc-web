@@ -1,4 +1,4 @@
-import { Link, useSelector, useLocation, useDispatch } from 'umi';
+import { Link, useSelector, useLocation, history, useDispatch } from 'umi';
 import { Input, Alert, Button, Row, Col, Divider, Form, Tabs, message } from 'antd';
 import { GooglePlusOutlined } from '@ant-design/icons';
 import styles from './Login.less';
@@ -36,29 +36,37 @@ export default () => {
     const submitting = loadingEffect.effects['login/login'];
     const dispatch = useDispatch();
     const apiConfig = systemConfig.getOption();
-    const handleSubmit = (values) => {
+    const handleSubmit = () => {
         const postData = {
             app: query.client,
             oauthId: query.oauthId,
             seed: state.seed
         }
-        if (state.countType === 'mobile') {
-            postData.receive = form.getFieldValue('mobile');
-            postData.verifyCode = form.getFieldValue('mobileVerifyCode');
-        } else {
-            postData.receive = form.getFieldValue('email');
-            postData.verifyCode = form.getFieldValue('emailVerifyCode');
-        }
-        dispatch({
-            type: 'login/bindLogin',
-            payload: postData,
-            callback: (result) => {
-                console.log('result', result);
-                if (result.uid) {
-
-                }
+        const fields = [
+            state.countType,
+            state.countType + 'VerifyCode'
+        ];
+        form.validateFields(fields).then(values => {
+            if (state.countType === 'mobile') {
+                postData.receive = form.getFieldValue('mobile');
+                postData.verifyCode = form.getFieldValue('mobileVerifyCode');
+            } else {
+                postData.receive = form.getFieldValue('email');
+                postData.verifyCode = form.getFieldValue('emailVerifyCode');
             }
-        });
+            dispatch({
+                type: 'login/bindLogin',
+                payload: postData,
+                callback: (result) => {
+                    console.log('result', result);
+                    if (result.uid) {
+                        history.push('/');
+                    } else {
+                        message.error('绑定失败');
+                    }
+                }
+            });
+        })
     };
 
     const renderMessage = content => {
@@ -92,7 +100,6 @@ export default () => {
                 }
             }, 1000);
             const code = form.getFieldValue(state.countType);
-            console.log('code', code);
             dispatch({
                 type: 'global/sendSms',
                 payload: {
@@ -109,81 +116,103 @@ export default () => {
             countType: k
         });
     }
+    useEffect(() => {
+        return () => {
+            if (counterTimer['mobile']) {
+                clearInterval(counterTimer['mobile'])
+            }
+            if (counterTimer['email']) {
+                clearInterval(counterTimer['email'])
+            }
+        }
+    }, []);
     return (
         <div className={styles.main} >
-            <Form onFinish={handleSubmit} form={form}>
-                <div style={{ padding: '10px', border: '1px solid #dfdfdf' }}>
+            <h1 style={{ margin: 0 }}>绑定账号</h1>
+            <Divider style={{ margin: '10px 0' }} />
+            <Form form={form}>
+                <div >
                     <Row>
-                        <Col xs={{ span: 4 }}>
-                            <img src={query.avatar} width={50} />
+                        <Col xs={{ span: 5 }}>
+                            <img src={query.avatar} width={50} style={{ borderRadius: '25px', marginTop: '40px' }} />
                         </Col>
-                        <Col xs={{ span: 20 }}>
-                            <h2 style={{ margin: 0 }}>绑定账号</h2>
-                            <div>{query.client}</div>
+                        <Col xs={{ span: 19 }}>
+                            <Tabs defaultActiveKey='mobile' onChange={onTabChange}>
+                                <Tabs.TabPane tab='手机账号' key='mobile'>
+                                    <Form.Item name='mobile' rules={[{
+                                        required: true,
+                                        message: '请输入手机号'
+                                    }, () => ({
+                                        validator(_, value) {
+                                            if (!value || /^(18|19|17|13|15)(\d{9})$/.test(value)) {
+                                                return Promise.resolve();
+                                            } else {
+                                                return Promise.reject(new Error('手机号不正确'))
+                                            }
+                                        }
+                                    })]}>
+                                        <Input placeholder={"手机号"} size="large" />
+                                    </Form.Item>
+
+                                    <Input.Group compact >
+                                        <Form.Item name='mobileVerifyCode' rules={[{
+                                            required: true,
+                                            message: '请输入验证码'
+                                        }]}
+                                            style={{ width: 'calc(100% - 60px)' }}
+                                        >
+                                            <Input size="large" placeholder={"请输入验证码"} />
+                                        </Form.Item>
+                                        <Button type="primary" disabled={state.mobileCount < MAXCOUNT} size='large' style={{ width: '60px' }} onClick={() => onCount('mobile')}>{state.mobileCount >= MAXCOUNT ? '发送' : state.mobileCount}</Button>
+                                    </Input.Group>
+
+
+                                </Tabs.TabPane>
+                                <Tabs.TabPane tab='邮箱账号' key='email'>
+                                    <Form.Item name='email' rules={[{
+                                        required: true,
+                                        message: '请输入邮箱地址'
+                                    }, {
+                                        type: 'email',
+                                        message: '请填写正确邮箱地址'
+                                    }]}>
+                                        <Input placeholder={"邮箱地址"} size="large" />
+                                    </Form.Item>
+                                    <Input.Group compact>
+                                        <Form.Item name='emailVerifyCode' rules={[{
+                                            required: true,
+                                            message: '请输入验证码'
+                                        }]}
+                                            style={{ width: 'calc(100% - 60px)' }}
+                                        >
+
+                                            <Input size="large" placeholder={"请输入验证码"} />
+                                        </Form.Item>
+                                        <Button type="primary" disabled={state.emailCount < MAXCOUNT} style={{ width: '60px' }} size='large' onClick={() => onCount('email')}>{state.emailCount >= MAXCOUNT ? '发送' : state.emailCount}</Button>
+                                    </Input.Group>
+
+                                </Tabs.TabPane>
+                            </Tabs>
+                        </Col>
+
+                        <Col xs={{ span: 19 }} push={5}>
+
+                            {loginStore.loginStatus === 'error' &&
+                                !submitting &&
+                                renderMessage('账户或密码错误')}
+
+                            <Form.Item>
+                                <Button size="large" onClick={handleSubmit} className={styles.submit} type="primary" htmlType="submit">绑定</Button>
+                            </Form.Item>
                         </Col>
                     </Row>
                 </div>
                 <Row >
                     <Col xs={{ span: 24 }}>
-                        <Tabs defaultActiveKey='mobile' onChange={onTabChange}>
-                            <Tabs.TabPane tab='手机账号' key='mobile'>
-                                <Form.Item name='mobile' rules={[{
-                                    required: true,
-                                    message: '请输入手机号'
-                                }, () => ({
-                                    validator(_, value) {
-                                        if (!value || /^(18|19|17|13|15)(\d{9})$/.test(value)) {
-                                            return Promise.resolve();
-                                        } else {
-                                            return Promise.reject(new Error('手机号不正确'))
-                                        }
-                                    }
-                                })]}>
-                                    <Input placeholder={"手机号"} size="large" />
-                                </Form.Item>
 
-                                <Input.Group compact>
-                                    <Form.Item name='mobileVerifyCode' rules={[{
-                                        required: true,
-                                        message: '请输入验证码'
-                                    }]}>
-                                        <Input size="large" placeholder={"请输入验证码"} />
-                                    </Form.Item>
-                                    <Button type="primary" disabled={state.mobileCount < MAXCOUNT} size='large' style={{ width: '60px' }} onClick={() => onCount('mobile')}>{state.mobileCount >= MAXCOUNT ? '发送' : state.mobileCount}</Button>
-                                </Input.Group>
-
-
-                            </Tabs.TabPane>
-                            <Tabs.TabPane tab='邮箱账号' key='email'>
-                                <Form.Item name='email' rules={[{
-                                    required: true,
-                                    message: '请输入邮箱地址'
-                                }, {
-                                    type: 'email',
-                                    message: '请填写正确邮箱地址'
-                                }]}>
-                                    <Input placeholder={"邮箱地址"} size="large" />
-                                </Form.Item>
-                                <Form.Item name='emailVerifyCode' rules={[{
-                                    required: true,
-                                    message: '请输入验证码'
-                                }]}>
-                                    <Input.Group compact>
-                                        <Input size="large" style={{ width: 'calc(100% - 60px)' }} placeholder={"请输入验证码"} />
-                                        <Button type="primary" disabled={state.emailCount < MAXCOUNT} style={{ width: '60px' }} size='large' onClick={() => onCount('email')}>{state.emailCount >= MAXCOUNT ? '发送' : state.emailCount}</Button>
-                                    </Input.Group>
-                                </Form.Item>
-                            </Tabs.TabPane>
-                        </Tabs>
                     </Col>
                 </Row>
-                {loginStore.loginStatus === 'error' &&
-                    !submitting &&
-                    renderMessage('账户或密码错误')}
 
-                <Form.Item>
-                    <Button size="large" className={styles.submit} type="primary" htmlType="submit">绑定</Button>
-                </Form.Item>
             </Form>
         </div >
     );

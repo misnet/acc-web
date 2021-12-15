@@ -27,6 +27,7 @@ const Oauth = props => {
         }
     }, []);
     useEffect(() => {
+        // console.log('loginInfo', loginInfo);
         if (loginInfo.uid && window.opener) {
             console.log('jump to url:', url);
             window.opener.location.href = url ? url : '/';

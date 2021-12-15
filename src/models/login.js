@@ -54,11 +54,8 @@ export default {
             }
         },
         *bindLogin({ payload, callback }, { call, put }) {
-            response = yield call(bindLogin, payload);
+            const response = yield call(bindLogin, payload);
             if (response.status === 0) {
-                if (typeof callback === 'function') {
-                    callback(response.data);
-                }
                 let data = {};
                 if (typeof response['data']['uid'] != 'undefined') {
                     data = response['data'];
@@ -80,7 +77,10 @@ export default {
                     type: 'changeLoginStatus',
                     payload: data,
                 });
-                if (data.uid) {
+
+                if (typeof callback === 'function') {
+                    callback(response.data);
+                } else if (data.uid) {
                     //reloadAuthorized();
                     history.push('/');
                 }

@@ -13,7 +13,7 @@ export default {
       appKey: 1000,
       appSecret: 'IsuZLMPJDVnwYp8XYp/Pf4HH6e5PY28c8oQy8akF5vWxMjvvSNORdPvDu6HK9eOAGcVmDk1jLRYIkAcGu7tgUQ=='
     };
-    let newOption = {...defaultOption};
+    let newOption = { ...defaultOption };
     if (process.env.API_GATEWAY) {
       newOption.gateway = process.env.API_GATEWAY;
     }
@@ -23,10 +23,10 @@ export default {
     if (process.env.API_SECRET) {
       newOption.appSecret = process.env.API_SECRET;
     }
-    console.log('process.env.API_SECRET',process.env.API_SECRET);
-    console.log('newOption',process.env.API_GATEWAY);
+    // console.log('process.env.API_SECRET',process.env.API_SECRET);
+    // console.log('newOption',process.env.API_GATEWAY);
     return newOption;
   },
-  SYS_NAME:process.env.TITLE?process.env.TITLE:'Kuga ACC',
-  DATE_FORMAT:'YYYY年MM月DD日 HH:mm:ss'
+  SYS_NAME: process.env.TITLE ? process.env.TITLE : 'Kuga ACC',
+  DATE_FORMAT: 'YYYY年MM月DD日 HH:mm:ss'
 };
