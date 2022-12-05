@@ -114,7 +114,7 @@ export default {
                 history.push('/');
             }
         },
-        *login({ payload }, { call, put }) {
+        *login({ payload, callback }, { call, put }) {
 
             let response = { data: {} };
             //if (payload.type == 'account') {
@@ -140,10 +140,10 @@ export default {
                 type: 'changeLoginStatus',
                 payload: data,
             });
-            if (data.uid) {
-                //reloadAuthorized();
-                history.push('/');
+            if (typeof callback === 'function') {
+                callback(data);
             }
+
         },
         *logout(_, { put, select }) {
             try {

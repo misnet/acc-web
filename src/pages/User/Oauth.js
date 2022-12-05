@@ -6,7 +6,7 @@ const Oauth = props => {
     const curLocation = useLocation();
     const dispatch = useDispatch();
     const loginInfo = useSelector(state => state.login);
-    const { url, client, code, security_token, avatar, oauthId, name } = curLocation.query;
+    const { autologin, url, client, code, security_token, avatar, oauthId, name } = curLocation.query;
     useEffect(() => {
 
         if (!security_token || !client) {
@@ -32,12 +32,27 @@ const Oauth = props => {
                     location.href = bindUrl;
                 }
             } else {
-                dispatch({
-                    type: 'login/loginByCode',
-                    payload: {
-                        code
+                if (autologin == 1) {
+                    dispatch({
+                        type: 'login/loginByCode',
+                        payload: {
+                            code
+                        }
+                    });
+                } else {
+                    let tourl = url;
+                    if (url.indexOf('?') === -1) {
+                        tourl += '?code=' + code;
+                    } else {
+                        tourl += '&code=' + code;
                     }
-                });
+                    if (window.opener) {
+                        window.opener.location.href = tourl;
+                        window.close();
+                    } else {
+                        location.href = tourl;
+                    }
+                }
             }
 
         }

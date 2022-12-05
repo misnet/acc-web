@@ -1,7 +1,33 @@
 import styles from '../Login.less';
 import { Form, Button, Alert, Input } from 'antd';
 import { GooglePlusOutlined, WechatOutlined } from '@ant-design/icons';
+import { generateUUID, setGlobalSetting, getGlobalSetting } from '@/utils/utils';
+import systemConfig from '../../../config';
 const page = props => {
+    const apiConfig = systemConfig.getOption();
+    const onConnect = client => {
+
+        const security_token = generateUUID();
+        const stateData = {
+            url: window.location.origin + '/user/oauth?client=' + client + '&url=/',
+            security_token,
+            appkey: apiConfig.appKey
+        }
+        setGlobalSetting({
+            [client + '_' + security_token]: security_token
+        });
+        let state = 'url=' + encodeURIComponent(stateData.url) + '&security_token=' + encodeURIComponent(security_token);
+        state += '&appkey=' + stateData.appkey;
+        //console.log('state', encodeURIComponent(state));
+        const left = (window.screen.availWidth - 600) / 2;
+        const baseUrl = `${apiConfig.gateway.split('//')[0]}//${apiConfig.gateway.split('//')[1].split('/')[0]}`;
+        const oauthUrl = baseUrl + '/oauth/client?client=' + client + '&state=' + encodeURIComponent(state);
+        //updateState({ visible: true, oauthUrl });
+        const connectWindow = window.open(oauthUrl, 'connectWindow', 'top=20,left=' + left + ',height=610,width=600,menubar=no,status=no,location=no,toolbar=no');
+        connectWindow.addEventListener('beforeunload', () => {
+            console.log('test');
+        });
+    }
     const renderMessage = content => {
         return <Alert style={{ marginBottom: 24 }} message={content} type="error" showIcon />;
     };
@@ -27,9 +53,9 @@ const page = props => {
         </Form.Item>
 
         <div>
-            <Button size="large" icon={<GooglePlusOutlined />} onClick={() => props.onConnect('google')} type="default" >Google 登陆</Button>
+            <Button size="large" icon={<GooglePlusOutlined />} onClick={() => onConnect('google')} type="default" >Google 登陆</Button>
 
-            <Button size="large" icon={<WechatOutlined />} onClick={() => props.onConnect('wechat')} type="default" >微信 登陆</Button>
+            <Button size="large" icon={<WechatOutlined />} onClick={() => onConnect('wechat')} type="default" >微信 登陆</Button>
         </div>
     </Form>
 }

@@ -3,11 +3,15 @@ export default [
         path: "/user/oauth", component: "./User/Oauth"
     },
     {
+        path: '/user/xlogin', component: './User/FrameLogin'
+    },
+    {
         path: "/user",
         component: "../layouts/UserLayout",
         routes: [
             { path: '/user', redirect: '/user/login' },
             { path: '/user/login', component: './User/Login' },
+            { path: '/user/xlogin', component: './User/FrameLogin' },
             { path: '/user/oauth-bind', component: './User/OauthBind' }
         ]
     },

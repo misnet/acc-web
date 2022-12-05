@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useSelector, useDispatch, history } from 'umi';
+import { Link, useSelector, useDispatch, useLocation } from 'umi';
 import { Input, Alert, Button, Row, Col, Form } from 'antd';
 import { ArrowLeftOutlined, GooglePlusOutlined, WechatOutlined } from '@ant-design/icons';
 import styles from './Login.less';
@@ -7,25 +7,39 @@ import systemConfig from '../../config';
 import { generateUUID, setGlobalSetting, getGlobalSetting } from '../../utils/utils';
 
 import logo from '@/assets/logo.svg';
-import LoginForm from './components/LoginForm';
+import LoginForm from './components/XLoginForm';
 export default () => {
     const loadingEffect = useSelector(state => state.loading);
     const loginStore = useSelector(state => state.login);
     const submitting = loadingEffect.effects['login/login'];
     const dispatch = useDispatch();
     const apiConfig = systemConfig.getOption();
+    const curLocation = useLocation();
+    const { url, autologin = 0 } = curLocation.query;
     const handleSubmit = (values) => {
         dispatch({
             type: 'login/login',
             payload: {
                 ...values
             },
-            callback: data => {
-                if (data.uid) {
-                    history.push('/');
+            callback: (result) => {
+                if (autologin !== 1) {
+                    let tourl = url;
+                    if (url.indexOf('?') === -1) {
+                        tourl += '?code=' + result.code;
+                    } else {
+                        tourl += '&code=' + result.code;
+                    }
+                    if (window.opener) {
+                        window.opener.location.href = tourl;
+                        window.close();
+                    } else {
+                        location.href = tourl;
+                    }
                 }
             }
         });
+
     };
     const [state, setState] = useState({
         visible: false
@@ -39,29 +53,6 @@ export default () => {
         })
     }
 
-    const onConnect = client => {
-
-        const security_token = generateUUID();
-        const stateData = {
-            url: window.location.origin + '/user/oauth?client=' + client + '&url=/',
-            security_token,
-            appkey: apiConfig.appKey
-        }
-        setGlobalSetting({
-            [client + '_' + security_token]: security_token
-        });
-        let state = 'url=' + encodeURIComponent(stateData.url) + '&security_token=' + encodeURIComponent(security_token);
-        state += '&appkey=' + stateData.appkey;
-        //console.log('state', encodeURIComponent(state));
-        const left = (window.screen.availWidth - 600) / 2;
-        const baseUrl = `${apiConfig.gateway.split('//')[0]}//${apiConfig.gateway.split('//')[1].split('/')[0]}`;
-        const oauthUrl = baseUrl + '/oauth/client?client=' + client + '&state=' + encodeURIComponent(state);
-        //updateState({ visible: true, oauthUrl });
-        const connectWindow = window.open(oauthUrl, 'connectWindow', 'top=20,left=' + left + ',height=610,width=600,menubar=no,status=no,location=no,toolbar=no');
-        connectWindow.addEventListener('beforeunload', () => {
-            console.log('test');
-        });
-    }
 
     return (
         <>
@@ -78,7 +69,6 @@ export default () => {
                     handleSubmit={handleSubmit}
                     loginStatus={loginStore.loginStatus}
                     submitting={submitting}
-                    onConnect={onConnect}
                 />}
                 {state.visible && <div>
                     <iframe border={0} src={state.oauthUrl} width='100%' height={400} />
