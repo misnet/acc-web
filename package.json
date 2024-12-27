@@ -35,5 +35,5 @@
     "typescript": "^5.0.3"
   },
   "alias": "多应用权限管理系统",
-  "name": "kuga/acc-web"
+  "name": "acc-web"
 }
