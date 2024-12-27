@@ -1,3 +1,4 @@
+import { SYS_CONFIG } from "@/constants";
 import { apiRequest } from "@/utils/utils";
 import { DrawerForm, ProFormCheckbox, ProFormText, ProFormTextArea } from "@ant-design/pro-components";
 import { useEffect, useRef } from "react";
@@ -62,7 +63,7 @@ const EditDrawer: React.FC<EditDrawerProps> = (props) => {
             maxLength: 100,
             showCount: true
         }} />
-        <ProFormCheckbox.Group name="appIds" label="应用" rules={[
+        {!SYS_CONFIG.ssa && <ProFormCheckbox.Group name="appIds" label="应用" rules={[
             {
                 type: "array",
                 required: true,
@@ -84,7 +85,7 @@ const EditDrawer: React.FC<EditDrawerProps> = (props) => {
                     });
                 }
                 return [];
-            }} />
+            }} />}
     </DrawerForm>
 }
 export default EditDrawer;

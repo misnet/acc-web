@@ -224,7 +224,7 @@ const Page: React.FC = () => {
                 }
                 setLocalSetting('pageSize', params.pageSize || 10);
                 let actionName = 'acc.user.alllist';
-                if (appId) {
+                if (appId || SYS_CONFIG.ssa) {
                     payload.appId = appId;
                     actionName = 'acc.user.list';
                 }

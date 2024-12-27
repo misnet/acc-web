@@ -8,7 +8,7 @@ import { getCacheData } from './utils/utils';
 import { history } from '@umijs/max';
 
 import Package from '../package.json';
-import { BarsOutlined, HomeOutlined, QuestionCircleOutlined, ToolOutlined, UsergroupAddOutlined, UserOutlined } from '@ant-design/icons';
+import { BarsOutlined, HomeOutlined, MenuOutlined, QuestionCircleOutlined, SettingOutlined, ToolOutlined, UsergroupAddOutlined, UserOutlined } from '@ant-design/icons';
 const loginPath = '/login';
 // 全局初始化数据配置，用于 Layout 用户信息和权限初始化
 // 更多信息见文档：https://next.umijs.org/docs/api/runtime-config#getinitialstate
@@ -77,7 +77,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
                 {
                     name: '角色管理',
                     path: '/roles',
-                    hideInMenu: true,
+                    hideInMenu: !SYS_CONFIG.ssa,
                     component: './roles/index',
                     icon: <UsergroupAddOutlined />
                 },
@@ -108,13 +108,15 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
                 {
                     name: '菜单管理',
                     path: '/menus',
-                    hideInMenu: true,
+                    icon: <MenuOutlined />,
+                    hideInMenu: !SYS_CONFIG.ssa,
                     component: './menus/index',
                 },
                 {
                     name: '配置参数',
-                    hideInMenu: true,
+                    hideInMenu: !SYS_CONFIG.ssa,
                     path: '/configuration',
+                    icon: <SettingOutlined />,
                     component: './configuration/index',
                 },
                 {

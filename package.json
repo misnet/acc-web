@@ -1,7 +1,8 @@
 {
-  "version": "2.0.0",
+  "version": "2.0.1",
   "private": true,
   "author": "donny <dony@podorn.com>",
+  "license": "GPL-3.0-only",
   "scripts": {
     "build": "max build",
     "dev": "max dev",
@@ -34,6 +35,6 @@
     "prettier-plugin-packagejson": "^2.4.3",
     "typescript": "^5.0.3"
   },
-  "alias": "多应用权限管理系统",
+  "alias": "应用权限管理系统",
   "name": "acc-web"
 }
