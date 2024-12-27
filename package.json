@@ -1,72 +1,39 @@
 {
+  "version": "2.0.0",
   "private": true,
+  "author": "donny <dony@podorn.com>",
   "scripts": {
-    "start": "umi dev",
-    "start-prod": "cross-env UMI_ENV=prod umi dev",
-    "build-prod": "cross-env UMI_ENV=prod umi build",
-    "build-test": "cross-env UMI_ENV=test umi build",
-    "build-dev": "cross-env UMI_ENV=dev APP_TYPE=site umi build",
-    "build": "umi build",
-    "test": "umi test",
-    "site": "npm run presite && cross-env APP_TYPE=site npm run build && firebase deploy && npm run docker:push",
-    "lint": "eslint --ext .js src mock tests"
-  },
-  "devDependencies": {
-    "antd-theme-webpack-plugin": "^1.1.9",
-    "babel-eslint": "^9.0.0",
-    "cross-env": "^5.2.0",
-    "eslint": "^5.15.1",
-    "eslint-config-umi": "^0.1.5",
-    "eslint-plugin-flowtype": "^2.50.0",
-    "eslint-plugin-import": "^2.14.0",
-    "eslint-plugin-jsx-a11y": "^5.1.1",
-    "eslint-plugin-react": "^7.11.1",
-    "husky": "^0.14.3",
-    "lint-staged": "^7.2.2",
-    "nice-try": "^2.0.0",
-    "umi": "^3.3.7"
+    "build": "max build",
+    "dev": "max dev",
+    "format": "prettier --cache --write .",
+    "postinstall": "max setup",
+    "prepare": "husky",
+    "setup": "max setup",
+    "start": "npm run dev"
   },
   "dependencies": {
-    "@babel/runtime": "^7.2.0",
-    "@ckeditor/ckeditor5-build-classic": "^11.2.0",
-    "@ckeditor/ckeditor5-react": "^1.1.0",
-    "@umijs/preset-react": "^1.7.13",
-    "ant-design-pro": "^2.3.1",
-    "braft-editor": "^2.2.0",
-    "braft-extensions": "^0.0.13",
-    "caniuse-lite": "^1.0.30001258",
-    "classnames": "^2.2.6",
-    "fabric": "^2.7.0",
-    "immutability-helper": "^2.9.0",
-    "install": "^0.12.2",
-    "jsondiffpatch": "^0.3.11",
-    "lodash": "^4.17.10",
-    "lodash-decorators": "^6.0.0",
-    "md5": "^2.2.1",
-    "memoize-one": "^4.0.3",
-    "moment": "^2.19.1",
-    "omit.js": "^1.0.0",
-    "path-to-regexp": "^2.4.0",
-    "prop-types": "^15.6.2",
-    "rc-animate": "^2.6.0",
-    "rc-queue-anim": "^1.6.8",
-    "react-container-query": "^0.11.0",
-    "react-copy-to-clipboard": "^5.0.1",
-    "react-dnd": "^7.0.2",
-    "react-dnd-html5-backend": "^7.0.2",
-    "react-document-title": "^2.0.3",
-    "react-infinite-scroller": "^1.2.4",
-    "react-json-pretty": "^2.2.0",
-    "react-json-view": "^1.19.1",
-    "react-media": "^1.8.0"
+    "@ant-design/icons": "^5.0.1",
+    "@ant-design/pro-components": "^2.4.4",
+    "@umijs/max": "^4.3.36",
+    "antd": "^5.4.0",
+    "classnames": "^2.5.1",
+    "crypto-js": "^4.2.0",
+    "dayjs": "^1.11.13",
+    "lodash": "^4.17.21",
+    "query-string": "^9.1.1",
+    "react-json-view": "^1.21.3",
+    "yarn": "^1.22.22"
   },
-  "lint-staged": {
-    "*.{js,jsx}": [
-      "eslint --fix",
-      "git add"
-    ]
+  "devDependencies": {
+    "@types/react": "^18.0.33",
+    "@types/react-dom": "^18.0.11",
+    "husky": "^9",
+    "lint-staged": "^13.2.0",
+    "prettier": "^2.8.7",
+    "prettier-plugin-organize-imports": "^3.2.2",
+    "prettier-plugin-packagejson": "^2.4.3",
+    "typescript": "^5.0.3"
   },
-  "engines": {
-    "node": ">=8.0.0"
-  }
+  "alias": "多应用权限管理系统",
+  "name": "kuga/acc-web"
 }

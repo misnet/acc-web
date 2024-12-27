@@ -1,0 +1,13 @@
+2.0.0
+    对接acc-api 2.0.0版本
+    升级umijs至4.3.36
+    升级antd至5.4.0
+    放弃dvajs
+    界面重构，借助antd-design/pro-components
+    增加配置管理功能
+    密码在发送前md5加密
+    根据kuga-opencore-api v2.3.1的v4网关变化，调整了header的发送参数
+    使用kuga-opencore-api的v4网关，不再使用v3网关，避免appSecret的暴露
+    客户端暂不支持多语种
+1.0.0
+    对接acc-api 1.1.7以下版本为基础

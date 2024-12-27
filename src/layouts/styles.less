@@ -1,0 +1,28 @@
+@import url('../constants/common.less');
+
+.tracker-info {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 20px;
+
+    .image {
+        width: 100px;
+        height: 100px;
+        margin-right: 20px;
+        border: 1px solid @borderColor;
+    }
+
+    &>ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+
+        &>li {
+            line-height: 1.5em;
+
+            &>span {
+                font-weight: bold;
+            }
+        }
+    }
+}
