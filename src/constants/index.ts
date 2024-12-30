@@ -24,7 +24,7 @@ export const SYS_CONFIG = {
     //语种，系统会向后端传递此参数，后端根据此参数返回对应的语言处理反馈
     lang: 'zh_CN',
     //是否是单应用模式
-    ssa: true
+    ssa: false
 }
 export const DEFAULT_USERINFO: Kuga.UserInfo = {
     uid: 0,

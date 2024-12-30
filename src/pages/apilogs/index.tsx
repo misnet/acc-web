@@ -92,7 +92,7 @@ const ListPage: React.FC = () => {
             key: 'createTime',
             render: (text, record) => {
 
-                return dayjs.unix(record.createTime * 1000).format('YYYY年MM月DD日 HH:mm:ss')
+                return dayjs.unix(parseInt(record.createTime)).format('YYYY年MM月DD日 HH:mm:ss')
             }
         }, {
             title: '响应时间（秒）',
