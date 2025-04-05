@@ -5,6 +5,7 @@ import { THEME_SOLUTIOIN } from './src/constants/index';
 export default defineConfig({
     define: {
         'process.env.UMI_ENV': process.env.UMI_ENV,
+        'process.env.API_HOST': process.env.API_HOST,
     },
     access: {},
     model: {},

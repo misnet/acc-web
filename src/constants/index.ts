@@ -2,19 +2,6 @@
 export const PUBLIC_PATH = '/';
 
 
-/**
- * 开发环境
- */
-export const DEV_ENV_CONFIG = {
-    API_HOST: 'http://xpod-acc.api.kuga.wang/v4/gateway',
-};
-/**
- * 正式环境
- */
-export const PROD_ENV_CONFIG = {
-    API_HOST: 'https://acc-api.kity.me/v4/gateway',
-};
-
 
 export const SYS_CONFIG = {
     //项目的APP_KEY，用于访问ACC的appId，需要和后端的一致
@@ -73,4 +60,7 @@ export const DICT = {
         }
     ]
 }
-export const API_CONFIG = process.env.UMI_ENV === 'prod' ? PROD_ENV_CONFIG : DEV_ENV_CONFIG;
+export const API_CONFIG = {
+    API_HOST: process.env.API_HOST+'/v4/gateway',
+};
+

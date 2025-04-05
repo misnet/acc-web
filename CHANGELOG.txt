@@ -1,3 +1,5 @@
+2.0.2
+    .env文件要配置API_HOST=http://域名，原先src/constants/index.js中配置PROD_ENV_CONFIG和DEV_ENV_CONFIG的API_HOST，现弃用。
 2.0.1
     增加对单应用模式ssa的支持
 2.0.0
