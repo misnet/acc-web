@@ -27,7 +27,7 @@ const Login: React.FC = () => {
     };
     useEffect(() => {
         if (userModel.userInfo.uid > 0) {
-            history.push('/home');
+            history.push('/');
         }
     }, [userModel.userInfo.uid]);
     return (

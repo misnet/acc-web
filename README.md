@@ -27,7 +27,13 @@
 相关参数在 src/constants/index.ts中定义，主要包括：
 1. SYS_CONFIG.appKey:  必须和服务端的ACC系统的应用id 一致
 2. SYS_CONFIG.lang:  默认zh_CN，这个是服务端处理信息的语种，支持zh_CN和en_US
-3. API_HOST: 分开发环境和正式环境，可分别配置，默认为开发环境，要用正式环境时请在根目录创建.env文件，内容输入UMI_ENV=prod，系统即可变成正式环境，API_HOST到时会就用正式环境的
+3. ssa: 是否是单应用模式，单应用模式下，目前的菜单如果要权限控制需要修改.umirc.ts文件，增加access属性，如access:'canView'
+3. 请在根目录创建.env文件，内容输入
+```
+UMI_ENV=prod
+API_HOST=http://你的后端服务域名
+```
+prod表示正式，test表示测试，如有更多环境需求，请在根目录创建.umirc.环境名.ts，然后UMI_ENV=环境名
 
 ## Docker
 本项目也可用docker运行，Dockerfile在根目录，docker build后再运行，端口为8080

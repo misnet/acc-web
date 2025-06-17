@@ -1,10 +1,15 @@
 export default (initialState: API.UserInfo) => {
-  // 在这里按照初始化数据定义项目中的权限，统一管理
-  // 参考文档 https://umijs.org/docs/max/access
-  const canSeeAdmin = !!(
-    initialState && initialState.name !== 'dontHaveAccess'
-  );
+  // 参考文档 https://next.umijs.org/docs/max/access
+  const canView = (menu: any) => {
+    if (!initialState || !initialState.menuList) {
+      return false;
+    }
+    console.log('initialState.menuList', menu.path, initialState.menuList);
+    const finded = initialState.menuList.filter(i => i.url === menu.path);
+    //console.log('finded',finded);
+    return finded && finded.length > 0;
+  };
   return {
-    canSeeAdmin,
+    canView,
   };
 };
